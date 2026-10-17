@@ -1,5 +1,76 @@
-/* Custom CSS for Chez Maggy Pizzeria */
+/* Custom CSS for Chez Maggy Pizzeria & Los Maderos Design */
+
+:root {
+    --gold-accent: #c5a059;
+    --gold-light: #e5c178;
+    --gold-dark: #9a7836;
+    --wood-dark: #1e130c;
+    --wood-card-bg: #2a1b12;
+    --cream-bg: #fdfbf7;
+    --cream-card-bg: #f9f4ec;
+}
+
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #F8F8F8; /* Base background seems light in some areas, dark in others */
+    background-color: #F8F8F8;
+}
+
+/* Wood Dark Background styling for Piso cards */
+.wood-dark-bg {
+    background: linear-gradient(135deg, #1c120c 0%, #2b1b11 50%, #1a110a 100%);
+    background-color: #2a1b12;
+    color: #f7e8d0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(197, 160, 89, 0.35);
+}
+
+/* Cream Light Background styling for Piso cards */
+.cream-light-bg {
+    background: linear-gradient(135deg, #fdfbf7 0%, #f7f0e6 100%);
+    background-color: #f9f4ec;
+    color: #2c1d11;
+    box-shadow: 0 10px 30px rgba(44, 29, 17, 0.08);
+    border: 1px solid rgba(197, 160, 89, 0.4);
+}
+
+/* Gold Badge & Trims */
+.gold-badge {
+    background: linear-gradient(135deg, #3d2817 0%, #1f130a 100%);
+    color: var(--gold-light);
+    border: 1px solid var(--gold-accent);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.gold-trim-badge {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    border: 1px solid var(--gold-accent);
+    color: #fef0d5;
+}
+
+.placeholder-box-tag {
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Hover & Responsive effects on floor cards */
+.piso-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.piso-card:hover {
+    transform: translateY(-4px);
+}
+
+@media (max-width: 768px) {
+    .piso-card {
+        flex-direction: column !important;
+    }
+    .piso-image-container {
+        width: 100% !important;
+        min-height: 220px !important;
+    }
+    .piso-content {
+        width: 100% !important;
+        padding: 1.5rem !important;
+    }
 }

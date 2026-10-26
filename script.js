@@ -431,21 +431,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Optional: If a category was requested but doesn't exist yet, we could show all or a message
-        // For now, if nothing matches, maybe just show everything
+        // Remove the initial preloader style so standard classes take effect
+        const preloaderStyle = document.getElementById('hash-preloader-style');
+        if (preloaderStyle) {
+            preloaderStyle.remove();
+        }
+
         if (!found && category !== 'all') {
-            // Un-hide everything just in case
             menuSections.forEach(sec => sec.classList.remove('hidden'));
         }
 
-        // Scroll to top of the active section considering the sticky header height
+        // Instantly scroll to section without layout jumps
         if (targetSection) {
             const header = document.querySelector('header');
             const headerHeight = header ? header.offsetHeight : 80;
             const y = targetSection.getBoundingClientRect().top + window.scrollY - headerHeight;
-            window.scrollTo({ top: y, behavior: 'smooth' });
+            window.scrollTo({ top: y, behavior: 'instant' });
         } else {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'instant' });
         }
     }
 

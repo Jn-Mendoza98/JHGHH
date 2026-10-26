@@ -11,6 +11,18 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <!-- Custom CSS -->
 <link href="styles.css" rel="stylesheet">
+<script>
+  (function() {
+    var hash = window.location.hash.replace('#', '');
+    if (hash && hash !== 'all') {
+      var css = '.menu-section:not([data-category="' + hash + '"]) { display: none !important; } .menu-section[data-category="' + hash + '"] { display: block !important; }';
+      var style = document.createElement('style');
+      style.id = 'hash-preloader-style';
+      style.appendChild(document.createTextNode(css));
+      document.head.appendChild(style);
+    }
+  })();
+</script>
 </head>
 <body class="bg-light text-gray-800"><header class="bg-darker text-white sticky top-0 z-50">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

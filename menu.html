@@ -42,21 +42,22 @@
 </a>
 </div>
 <!-- Desktop Menu -->
-<nav class="hidden lg:flex space-x-4 xl:space-x-6 text-xs xl:text-sm font-medium items-center uppercase tracking-wide">
-<a class="text-white hover:text-primary transition" href="index.html">Inicio</a>
-<a class="text-gray-300 hover:text-primary transition category-link" data-category="entradas" href="#entradas">Entradas</a>
-<a class="text-gray-300 hover:text-primary transition category-link" data-category="cremas" href="#cremas">Cremas</a>
-<a class="text-gray-300 hover:text-primary transition category-link" data-category="calzone" href="#calzone">Calzone</a>
-<a class="text-gray-300 hover:text-primary transition category-link" data-category="pizzas" href="#pizzas">Pizzas</a>
-<a class="text-gray-300 hover:text-primary transition category-link" data-category="pastas" href="#pastas">Pastas</a>
-<a class="text-gray-300 hover:text-primary transition category-link" data-category="refrescos" href="#refrescos">Refrescos</a>
-<a class="text-gray-300 hover:text-primary transition category-link" data-category="postres" href="#postres">Postres</a>
-<a class="text-gray-300 hover:text-primary transition category-link" data-category="bebidas" href="#bebidas">Bebidas</a>
-<a class="text-gray-300 hover:text-primary transition category-link" data-category="nosotros" href="#nosotros">Nosotros</a>
+<nav class="hidden lg:flex flex-1 min-w-0 overflow-x-auto header-nav-scroll space-x-4 xl:space-x-6 text-xs xl:text-sm font-medium items-center uppercase tracking-wide mx-4 xl:mx-8">
+<a class="flex-shrink-0 whitespace-nowrap text-white hover:text-primary transition" href="index.html">Inicio</a>
+<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="entradas" href="#entradas">Entradas</a>
+<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="cremas" href="#cremas">Cremas</a>
+<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="calzone" href="#calzone">Calzone</a>
+<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="pizzas" href="#pizzas">Pizzas</a>
+<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="pastas" href="#pastas">Pastas</a>
+<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="refrescos" href="#refrescos">Refrescos</a>
+<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="postres" href="#postres">Postres</a>
+<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="bebidas" href="#bebidas">Bebidas</a>
+<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="nosotros" href="#nosotros">Nosotros</a>
+<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition" href="index.html#location">Contáctanos</a>
 </nav>
 <!-- Actions (Button + Cart) -->
-<div class="flex items-center gap-4">
-<a class="hidden lg:inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-primary hover:bg-red-700 transition uppercase" href="index.html#">
+<div class="flex-shrink-0 flex items-center gap-4">
+<a class="hidden lg:inline-flex flex-shrink-0 whitespace-nowrap items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-primary hover:bg-red-700 transition uppercase" href="index.html#">
                         Pedir Ahora
                     </a>
 <button id="cart-toggle-btn" class="relative text-white hover:text-primary transition" onclick="cartApp.toggleModal()">
@@ -66,6 +67,40 @@
 </div>
 </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const nav = document.querySelector('header .header-nav-scroll');
+        if (!nav) return;
+        nav.addEventListener('wheel', (e) => {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                nav.scrollLeft += e.deltaY;
+            }
+        }, { passive: false });
+        let isDown = false, startX, scrollLeft, isDragging = false;
+        nav.addEventListener('mousedown', (e) => {
+            isDown = true;
+            isDragging = false;
+            startX = e.pageX - nav.offsetLeft;
+            scrollLeft = nav.scrollLeft;
+        });
+        nav.addEventListener('mouseleave', () => { isDown = false; });
+        nav.addEventListener('mouseup', () => { isDown = false; });
+        nav.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            isDragging = true;
+            const x = e.pageX - nav.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            nav.scrollLeft = scrollLeft - walk;
+        });
+        nav.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', (e) => {
+                if (isDragging) e.preventDefault();
+            });
+        });
+    });
+</script>
 
 <!-- Mobile Menu -->
 <div id="mobile-menu-overlay" class="fixed inset-0 z-40 bg-black bg-opacity-50 hidden transition-opacity"></div>

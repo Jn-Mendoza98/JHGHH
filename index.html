@@ -39,22 +39,23 @@
                 </div>
 
                 <!-- Desktop Menu -->
-                <nav class="hidden lg:flex space-x-4 xl:space-x-6 text-xs xl:text-sm font-medium items-center uppercase tracking-wide">
-                    <a href="index.html" class="text-white hover:text-primary transition">Inicio</a>
-                    <a href="menu.html#entradas" data-category="entradas" class="text-gray-300 hover:text-primary transition">Entradas</a>
-                    <a href="menu.html#cremas" data-category="cremas" class="text-gray-300 hover:text-primary transition">Cremas</a>
-                    <a href="menu.html#calzone" data-category="calzone" class="text-gray-300 hover:text-primary transition">Calzone</a>
-                    <a href="menu.html#pizzas" data-category="pizzas" class="text-gray-300 hover:text-primary transition">Pizzas</a>
-                    <a href="menu.html#pastas" data-category="pastas" class="text-gray-300 hover:text-primary transition">Pastas</a>
-                    <a href="menu.html#refrescos" data-category="refrescos" class="text-gray-300 hover:text-primary transition">Refrescos</a>
-                    <a href="menu.html#postres" data-category="postres" class="text-gray-300 hover:text-primary transition">Postres</a>
-                    <a href="menu.html#bebidas" data-category="bebidas" class="text-gray-300 hover:text-primary transition">Bebidas</a>
-                    <a href="menu.html#nosotros" data-category="nosotros" class="text-gray-300 hover:text-primary transition">Nosotros</a>
+                <nav class="hidden lg:flex flex-1 min-w-0 overflow-x-auto header-nav-scroll space-x-4 xl:space-x-6 text-xs xl:text-sm font-medium items-center uppercase tracking-wide mx-4 xl:mx-8">
+                    <a href="index.html" class="flex-shrink-0 whitespace-nowrap text-white hover:text-primary transition">Inicio</a>
+                    <a href="menu.html#entradas" data-category="entradas" class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition">Entradas</a>
+                    <a href="menu.html#cremas" data-category="cremas" class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition">Cremas</a>
+                    <a href="menu.html#calzone" data-category="calzone" class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition">Calzone</a>
+                    <a href="menu.html#pizzas" data-category="pizzas" class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition">Pizzas</a>
+                    <a href="menu.html#pastas" data-category="pastas" class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition">Pastas</a>
+                    <a href="menu.html#refrescos" data-category="refrescos" class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition">Refrescos</a>
+                    <a href="menu.html#postres" data-category="postres" class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition">Postres</a>
+                    <a href="menu.html#bebidas" data-category="bebidas" class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition">Bebidas</a>
+                    <a href="menu.html#nosotros" data-category="nosotros" class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition">Nosotros</a>
+                    <a href="#location" class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition">Contáctanos</a>
                 </nav>
 
                 <!-- Actions (Button + Cart) -->
-                <div class="flex items-center gap-4">
-                    <a href="menu.html" class="hidden lg:inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-primary hover:bg-red-700 transition uppercase">
+                <div class="flex-shrink-0 flex items-center gap-4">
+                    <a href="menu.html" class="hidden lg:inline-flex flex-shrink-0 whitespace-nowrap items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-primary hover:bg-red-700 transition uppercase">
                         Pedir Ahora
                     </a>
                     <button id="cart-toggle-btn" class="relative text-white hover:text-primary transition" onclick="cartApp.toggleModal()">
@@ -64,6 +65,40 @@
                 </div>
             </div>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const nav = document.querySelector('header .header-nav-scroll');
+                if (!nav) return;
+                nav.addEventListener('wheel', (e) => {
+                    if (e.deltaY !== 0) {
+                        e.preventDefault();
+                        nav.scrollLeft += e.deltaY;
+                    }
+                }, { passive: false });
+                let isDown = false, startX, scrollLeft, isDragging = false;
+                nav.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    isDragging = false;
+                    startX = e.pageX - nav.offsetLeft;
+                    scrollLeft = nav.scrollLeft;
+                });
+                nav.addEventListener('mouseleave', () => { isDown = false; });
+                nav.addEventListener('mouseup', () => { isDown = false; });
+                nav.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    isDragging = true;
+                    const x = e.pageX - nav.offsetLeft;
+                    const walk = (x - startX) * 1.5;
+                    nav.scrollLeft = scrollLeft - walk;
+                });
+                nav.querySelectorAll('a').forEach(a => {
+                    a.addEventListener('click', (e) => {
+                        if (isDragging) e.preventDefault();
+                    });
+                });
+            });
+        </script>
 
         <!-- Mobile Menu -->
         <div id="mobile-menu-overlay" class="fixed inset-0 z-40 bg-black bg-opacity-50 hidden transition-opacity"></div>

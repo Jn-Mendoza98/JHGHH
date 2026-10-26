@@ -74,3 +74,20 @@ body {
         padding: 1.5rem !important;
     }
 }
+
+/* Scrollable Desktop Header Navigation */
+.header-nav-scroll {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.header-nav-scroll::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+
+.header-nav-scroll:active {
+    cursor: grabbing;
+}

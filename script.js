@@ -414,6 +414,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to filter sections based on category string
     function filterCategory(category) {
+        // Remove hash preloader style if present
+        const preloaderStyle = document.getElementById('hash-preloader-style');
+        if (preloaderStyle) {
+            preloaderStyle.remove();
+        }
+
         if (!isMenuPage || !menuSections.length) return;
 
         let found = false;
@@ -431,12 +437,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Optional: If a category was requested but doesn't exist yet, we could show all or a message
-        // For now, if nothing matches, maybe just show everything
         if (!found && category !== 'all') {
-            // Un-hide everything just in case
             menuSections.forEach(sec => sec.classList.remove('hidden'));
         }
+
+        // Update active nav link styling
+        const navLinks = document.querySelectorAll('header nav a[data-category], #mobile-menu a[data-category]');
+        navLinks.forEach(link => {
+            const cat = link.getAttribute('data-category');
+            if (cat === category) {
+                link.classList.remove('text-gray-300', 'text-gray-400');
+                link.classList.add('text-primary');
+            } else {
+                link.classList.remove('text-primary');
+                if (link.closest('#mobile-menu')) {
+                    link.classList.add('text-gray-400');
+                } else {
+                    link.classList.add('text-gray-300');
+                }
+            }
+        });
 
         // Scroll to top of the active section considering the sticky header height
         if (targetSection) {

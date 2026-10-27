@@ -53,7 +53,7 @@
 <a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="postres" href="#postres">Postres</a>
 <a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="bebidas" href="#bebidas">Bebidas</a>
 <a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="nosotros" href="#nosotros">Nosotros</a>
-<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition" href="index.html#location">Contáctanos</a>
+<a class="flex-shrink-0 whitespace-nowrap text-gray-300 hover:text-primary transition category-link" data-category="contactanos" href="#contactanos">Contáctanos</a>
 </nav>
 <!-- Actions (Button + Cart) -->
 <div class="flex-shrink-0 flex items-center gap-4">
@@ -124,7 +124,7 @@
         <a href="#postres" data-category="postres" class="flex items-center gap-3 text-lg font-bold uppercase tracking-wider text-gray-400 hover:text-primary transition category-link"><span class="w-6 text-center">🧁</span> Postres</a>
         <a href="#bebidas" data-category="bebidas" class="flex items-center gap-3 text-lg font-bold uppercase tracking-wider text-gray-400 hover:text-primary transition category-link"><span class="w-6 text-center">🥤</span> Bebidas</a>
         <a href="#nosotros" data-category="nosotros" class="flex items-center gap-3 text-lg font-bold uppercase tracking-wider text-gray-400 hover:text-primary transition category-link"><span class="w-6 text-center">🏛️</span> Nosotros</a>
-        <a href="index.html#location" class="flex items-center gap-3 text-lg font-bold uppercase tracking-wider text-gray-400 hover:text-primary transition"><i class="fas fa-envelope w-6 text-center"></i> Contáctanos</a>
+        <a href="#contactanos" data-category="contactanos" class="flex items-center gap-3 text-lg font-bold uppercase tracking-wider text-gray-400 hover:text-primary transition category-link"><i class="fas fa-envelope w-6 text-center"></i> Contáctanos</a>
     </div>
 </div>
 </header><main class="pb-16 bg-light min-h-screen">
@@ -2983,6 +2983,34 @@ function addRefresco(name, id, img, btn) {
 
     </div>
 </section>
+
+<!-- Contáctanos Section -->
+<section id="contactanos" class="bg-darker text-white py-12 md:py-20 border-t border-gray-800 menu-section hidden" data-category="contactanos">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header Title -->
+        <div class="text-center mb-10">
+            <div class="flex items-center justify-center gap-4 mb-2">
+                <div class="h-px bg-amber-500/50 w-12"></div>
+                <span class="text-xs sm:text-sm font-bold tracking-widest text-amber-400 uppercase">Nuestras Sedes</span>
+                <div class="h-px bg-amber-500/50 w-12"></div>
+            </div>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold uppercase tracking-wider text-white">CONTÁCTANOS</h2>
+            <p class="text-gray-400 text-sm sm:text-base mt-2">Encuentra la sede más cercana a ti y visítanos o realiza tu consulta</p>
+        </div>
+
+        <!-- Horizontal Scrollable City Selector Bar -->
+        <div class="relative mb-10">
+            <div id="city-selector-nav" class="flex items-center gap-3 overflow-x-auto whitespace-nowrap py-3 px-2 no-scrollbar header-nav-scroll scroll-smooth select-none cursor-grab">
+                <!-- City pill buttons rendered dynamically by JS -->
+            </div>
+        </div>
+
+        <!-- Sedes Cards Container -->
+        <div id="sedes-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <!-- Cards injected dynamically by JS -->
+        </div>
+    </div>
+</section>
 </main><footer class="bg-darker text-white pt-12 pb-6 border-t border-gray-800">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
@@ -3007,7 +3035,7 @@ function addRefresco(name, id, img, btn) {
 <li><a class="hover:text-primary transition flex items-center justify-between md:justify-start" href="index.html">Inicio <i class="fas fa-chevron-right text-xs md:hidden"></i></a></li>
 <li><a class="hover:text-primary transition flex items-center justify-between md:justify-start" href="menu.html">Menú <i class="fas fa-chevron-right text-xs md:hidden"></i></a></li>
 <li><a class="hover:text-primary transition flex items-center justify-between md:justify-start category-link" data-category="nosotros" href="#nosotros">Nosotros <i class="fas fa-chevron-right text-xs md:hidden"></i></a></li>
-<li><a class="hover:text-primary transition flex items-center justify-between md:justify-start" href="index.html#location">Contáctanos <i class="fas fa-chevron-right text-xs md:hidden"></i></a></li>
+<li><a class="hover:text-primary transition flex items-center justify-between md:justify-start category-link" data-category="contactanos" href="#contactanos">Contáctanos <i class="fas fa-chevron-right text-xs md:hidden"></i></a></li>
 </ul>
 </div>
 <!-- Help -->

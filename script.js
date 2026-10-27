@@ -1281,3 +1281,247 @@ function confirmEspaguetis(btn) {
     cartApp.addItem(name, price, img, category, cardBtn || btn);
     closeEspaguetisModal();
 }
+
+// --- Sedes & Ubicaciones App Logic ---
+const sedesApp = {
+    selectedCity: 'Chiclayo',
+    cities: [
+        { name: 'Chiclayo', count: 2 },
+        { name: 'Iquitos', count: 2 },
+        { name: 'Tarapoto', count: 1 },
+        { name: 'Pucallpa', count: 2 },
+        { name: 'Cusco', count: 3 },
+        { name: 'Tacna', count: 1 }
+    ],
+    sedes: {
+        'Chiclayo': [
+            {
+                title: 'Chiclayo - Av. Balta',
+                address: 'Av. Balta #417 - Chiclayo',
+                schedule: 'Lun - Dom: 05:00 p.m. - 12:00 a.m.',
+                phone: '(074) 205 839',
+                mapUrl: 'https://www.google.com/maps/search/?api=1&query=Av.+Balta+417,+Chiclayo',
+                whatsappUrl: 'https://wa.me/c/51970923423',
+                img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                title: 'Chiclayo - Sta. Victoria',
+                address: 'Chiclayo, Lambayeque',
+                schedule: 'Lun - Dom: 05:00 p.m. - 12:00 a.m.',
+                phone: '(074) 205 839',
+                mapUrl: 'https://www.google.com/maps/search/?api=1&query=Chez+Maggy+Chiclayo',
+                whatsappUrl: 'https://wa.me/c/51970923423',
+                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            }
+        ],
+        'Iquitos': [
+            {
+                title: 'Iquitos - Centro',
+                address: 'Iquitos, Loreto',
+                schedule: 'Lun - Dom: 05:00 p.m. - 12:00 a.m.',
+                mapUrl: 'https://www.google.com/maps/search/?api=1&query=Chez+Maggy+Iquitos',
+                whatsappUrl: 'https://wa.me/c/51970923423',
+                img: 'https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                title: 'Iquitos - Sede 2',
+                address: 'Iquitos, Loreto',
+                schedule: 'Lun - Dom: 05:00 p.m. - 12:00 a.m.',
+                mapUrl: 'https://www.google.com/maps/search/?api=1&query=Chez+Maggy+Iquitos',
+                whatsappUrl: 'https://wa.me/c/51970923423',
+                img: 'https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            }
+        ],
+        'Tarapoto': [
+            {
+                title: 'Tarapoto - Centro',
+                address: 'Tarapoto, San Martín',
+                schedule: 'Lun - Dom: 05:00 p.m. - 12:00 a.m.',
+                mapUrl: 'https://www.google.com/maps/search/?api=1&query=Chez+Maggy+Tarapoto',
+                whatsappUrl: 'https://wa.me/c/51970923423',
+                img: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            }
+        ],
+        'Pucallpa': [
+            {
+                title: 'Pucallpa - Sede Principal',
+                address: 'Pucallpa, Ucayali',
+                schedule: 'Lun - Dom: 05:00 p.m. - 12:00 a.m.',
+                mapUrl: 'https://www.google.com/maps/search/?api=1&query=Chez+Maggy+Pucallpa',
+                whatsappUrl: 'https://wa.me/c/51970923423',
+                img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                title: 'Pucallpa - Sede 2',
+                address: 'Pucallpa, Ucayali',
+                schedule: 'Lun - Dom: 05:00 p.m. - 12:00 a.m.',
+                mapUrl: 'https://www.google.com/maps/search/?api=1&query=Chez+Maggy+Pucallpa',
+                whatsappUrl: 'https://wa.me/c/51970923423',
+                img: 'https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            }
+        ],
+        'Cusco': [
+            {
+                title: 'Cusco - Centro Histórico',
+                address: 'Cusco, Perú',
+                schedule: 'Lun - Dom: 05:00 p.m. - 12:00 a.m.',
+                mapUrl: 'https://www.google.com/maps/search/?api=1&query=Chez+Maggy+Cusco',
+                whatsappUrl: 'https://wa.me/c/51970923423',
+                img: 'https://images.unsplash.com/photo-1579751626657-72bc17010498?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                title: 'Cusco - Plateros',
+                address: 'Cusco, Perú',
+                schedule: 'Lun - Dom: 05:00 p.m. - 12:00 a.m.',
+                mapUrl: 'https://www.google.com/maps/search/?api=1&query=Chez+Maggy+Cusco',
+                whatsappUrl: 'https://wa.me/c/51970923423',
+                img: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                title: 'Cusco - Tecsecocha',
+                address: 'Cusco, Perú',
+                schedule: 'Lun - Dom: 05:00 p.m. - 12:00 a.m.',
+                mapUrl: 'https://www.google.com/maps/search/?api=1&query=Chez+Maggy+Cusco',
+                whatsappUrl: 'https://wa.me/c/51970923423',
+                img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            }
+        ],
+        'Tacna': [
+            {
+                title: 'Tacna - Centro',
+                address: 'Tacna, Perú',
+                schedule: 'Lun - Dom: 05:00 p.m. - 12:00 a.m.',
+                mapUrl: 'https://www.google.com/maps/search/?api=1&query=Chez+Maggy+Tacna',
+                whatsappUrl: 'https://wa.me/c/51970923423',
+                img: 'https://images.unsplash.com/photo-1578474846511-04ba529f0b88?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            }
+        ]
+    },
+
+    init() {
+        const nav = document.getElementById('city-selector-nav');
+        if (!nav) return;
+
+        this.renderCitySelector();
+        this.renderSedesCards(this.selectedCity);
+        this.setupHorizontalDragScroll(nav);
+    },
+
+    selectCity(cityName) {
+        let isDragging = false;
+        if (window.__isDraggingCityNav) return;
+        this.selectedCity = cityName;
+        this.renderCitySelector();
+        this.renderSedesCards(cityName);
+    },
+
+    renderCitySelector() {
+        const nav = document.getElementById('city-selector-nav');
+        if (!nav) return;
+
+        nav.innerHTML = this.cities.map(city => {
+            const isSelected = city.name === this.selectedCity;
+            const btnClass = isSelected
+                ? 'bg-gradient-to-r from-primary to-red-700 text-white border-primary shadow-lg shadow-red-900/30 font-bold scale-[1.03]'
+                : 'bg-[#1c130d] text-gray-300 border-amber-900/40 hover:border-amber-500 hover:text-white font-medium';
+            const badgeClass = isSelected
+                ? 'bg-white text-primary font-extrabold'
+                : 'bg-amber-950/80 text-amber-300 border border-amber-600/40 font-bold';
+
+            return `
+                <button type="button" onclick="sedesApp.selectCity('${city.name}')" class="flex-shrink-0 inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 ${btnClass}">
+                    <span>${city.name}</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] sm:text-xs ${badgeClass}">${city.count}</span>
+                </button>
+            `;
+        }).join('');
+    },
+
+    renderSedesCards(cityName) {
+        const container = document.getElementById('sedes-cards-container');
+        if (!container) return;
+
+        const sedesList = this.sedes[cityName] || [];
+
+        container.innerHTML = sedesList.map(sede => `
+            <div class="bg-[#1a120b] rounded-2xl overflow-hidden shadow-xl border border-amber-600/30 flex flex-col hover:border-amber-500/60 transition-all duration-300 hover:-translate-y-1 group">
+                <div class="h-48 sm:h-56 overflow-hidden relative bg-neutral-900">
+                    <img src="${sede.img}" alt="${sede.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1a120b] via-transparent to-transparent"></div>
+                    <div class="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-lg border border-amber-500/40 text-amber-300 font-bold text-[11px] uppercase tracking-wider">
+                        <i class="fas fa-store mr-1 text-primary"></i> ${cityName}
+                    </div>
+                </div>
+                <div class="p-5 sm:p-6 flex flex-col flex-grow text-gray-200">
+                    <h3 class="text-xl font-serif font-bold text-white mb-4 tracking-wide">${sede.title}</h3>
+                    <div class="space-y-3 mb-6 text-xs sm:text-sm text-gray-300 flex-grow">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt text-primary text-base mt-0.5 w-4 text-center"></i>
+                            <span class="font-medium">${sede.address}</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="far fa-clock text-amber-400 text-base mt-0.5 w-4 text-center"></i>
+                            <span class="font-medium">${sede.schedule}</span>
+                        </div>
+                        ${sede.phone ? `
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-phone-alt text-green-400 text-base mt-0.5 w-4 text-center"></i>
+                            <span class="font-medium">${sede.phone}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-amber-950/80 mt-auto">
+                        <a href="${sede.mapUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-amber-500/40 text-amber-200 bg-amber-950/40 hover:bg-amber-900/60 hover:text-white text-xs font-bold transition uppercase tracking-wider text-center">
+                            Cómo Llegar <i class="fas fa-location-arrow ml-1.5 text-xs"></i>
+                        </a>
+                        <a href="${sede.whatsappUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-xs font-bold transition uppercase tracking-wider text-center shadow-md hover:shadow-green-600/30">
+                            <i class="fab fa-whatsapp text-sm mr-1.5"></i> Consultar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    setupHorizontalDragScroll(nav) {
+        if (!nav) return;
+
+        nav.addEventListener('wheel', (e) => {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                nav.scrollLeft += e.deltaY;
+            }
+        }, { passive: false });
+
+        let isDown = false;
+        let startX, scrollLeft;
+
+        nav.addEventListener('mousedown', (e) => {
+            isDown = true;
+            window.__isDraggingCityNav = false;
+            startX = e.pageX - nav.offsetLeft;
+            scrollLeft = nav.scrollLeft;
+        });
+
+        nav.addEventListener('mouseleave', () => { isDown = false; });
+        nav.addEventListener('mouseup', () => {
+            setTimeout(() => { window.__isDraggingCityNav = false; }, 50);
+            isDown = false;
+        });
+
+        nav.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - nav.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            if (Math.abs(walk) > 5) {
+                window.__isDraggingCityNav = true;
+            }
+            nav.scrollLeft = scrollLeft - walk;
+        });
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    sedesApp.init();
+});

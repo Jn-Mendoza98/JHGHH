@@ -75,8 +75,8 @@ body {
     }
 }
 
-/* Scrollable Desktop Header Navigation */
-.header-nav-scroll {
+/* Scrollable Navigation & Utilities */
+.header-nav-scroll, .no-scrollbar {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
     cursor: grab;
@@ -84,7 +84,7 @@ body {
     -webkit-user-select: none;
 }
 
-.header-nav-scroll::-webkit-scrollbar {
+.header-nav-scroll::-webkit-scrollbar, .no-scrollbar::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
 }
 

@@ -10,8 +10,11 @@
     --cream-card-bg: #f9f4ec;
 }
 
+body, h1, h2, h3, h4, h5, h6, input, button, select, textarea {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
 body {
-    font-family: 'Montserrat', sans-serif;
     background-color: #F8F8F8;
 }
 

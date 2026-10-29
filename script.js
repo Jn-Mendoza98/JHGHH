@@ -256,7 +256,7 @@ tailwind.config = {
             },
             fontFamily: {
                 sans: ['Montserrat', 'sans-serif'],
-                serif: ['Playfair Display', 'serif'] // For some headings if needed
+                        serif: ['Montserrat', 'sans-serif']
             }
         }
     }
@@ -1453,7 +1453,7 @@ const sedesApp = {
                     </div>
                 </div>
                 <div class="p-5 sm:p-6 flex flex-col flex-grow text-gray-200">
-                    <h3 class="text-xl font-serif font-bold text-white mb-4 tracking-wide">${sede.title}</h3>
+                    <h3 class="text-xl font-bold text-white mb-4 tracking-wide">${sede.title}</h3>
                     <div class="space-y-3 mb-6 text-xs sm:text-sm text-gray-300 flex-grow">
                         <div class="flex items-start gap-3">
                             <i class="fas fa-map-marker-alt text-primary text-base mt-0.5 w-4 text-center"></i>

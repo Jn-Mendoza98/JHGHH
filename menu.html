@@ -531,11 +531,11 @@
 
                     <!-- Ver Ingredientes Button for Modal -->
                     <div class="mt-2 text-center w-full">
-                        <button id="amigusto-ing-btn" onclick="openAmigustoModal('pizza')" class="w-full text-xs bg-gray-100 text-gray-700 font-bold py-2 px-3 rounded-lg hover:bg-gray-200 transition-colors uppercase tracking-wide border border-gray-200 shadow-sm flex items-center justify-center gap-2">
+                        <button id="amigusto-ing-btn" onclick="pizzaAmigustoApp.openModal()" class="w-full text-xs bg-gray-100 text-gray-700 font-bold py-2 px-3 rounded-lg hover:bg-gray-200 transition-colors uppercase tracking-wide border border-gray-200 shadow-sm flex items-center justify-center gap-2">
                             <i class="fas fa-list-ul"></i> Ver Ingredientes
                         </button>
                     </div>
-<button id="add-btn-4" onclick="addAmigustoToCart('pizza', this)" class="w-full mt-5 bg-gradient-to-r from-primary to-red-700 text-white py-3 px-4 rounded-xl font-bold flex items-center justify-center hover:shadow-[0_8px_20px_rgba(230,33,23,0.4)] hover:-translate-y-0.5 transition-all duration-300 group">
+                    <button id="add-btn-4" onclick="pizzaAmigustoApp.addToCart(this)" class="w-full mt-5 bg-gradient-to-r from-primary to-red-700 text-white py-3 px-4 rounded-xl font-bold flex items-center justify-center hover:shadow-[0_8px_20px_rgba(230,33,23,0.4)] hover:-translate-y-0.5 transition-all duration-300 group">
                         <div class="flex items-center gap-2">
                             <div class="bg-white/20 p-1.5 rounded-lg group-hover:scale-110 transition-transform">
                                 <i class="fas fa-shopping-cart text-sm"></i>
@@ -1773,11 +1773,11 @@
     </div>
 
     <div class="px-4 pb-4 pt-2 mt-auto w-full border-t border-gray-50 space-y-2">
-        <button onclick="openAmigustoModal('calzone')" class="w-full py-2 px-4 rounded-lg border border-gray-300 text-gray-700 font-bold text-xs sm:text-sm tracking-wide hover:border-primary hover:text-primary transition-all duration-300 flex items-center justify-center gap-2 bg-white hover:bg-red-50 group">
+        <button onclick="calzoneAmigustoApp.openModal()" class="w-full py-2 px-4 rounded-lg border border-gray-300 text-gray-700 font-bold text-xs sm:text-sm tracking-wide hover:border-primary hover:text-primary transition-all duration-300 flex items-center justify-center gap-2 bg-white hover:bg-red-50 group">
             <i class="fas fa-list-ul text-gray-400 group-hover:text-primary transition-colors text-xs"></i>
             VER INGREDIENTES
         </button>
-        <button onclick="addAmigustoToCart('calzone', this)" class="w-full bg-gradient-to-r from-primary to-red-700 text-white py-2 px-4 rounded-lg font-bold flex items-center justify-center hover:shadow-[0_4px_12px_rgba(230,33,23,0.3)] hover:-translate-y-0.5 transition-all duration-300 group">
+        <button onclick="calzoneAmigustoApp.addToCart(this)" class="w-full bg-gradient-to-r from-primary to-red-700 text-white py-2 px-4 rounded-lg font-bold flex items-center justify-center hover:shadow-[0_4px_12px_rgba(230,33,23,0.3)] hover:-translate-y-0.5 transition-all duration-300 group">
             <i class="fas fa-shopping-cart text-xs group-hover:scale-110 transition-transform mr-2"></i>
             <span class="text-xs sm:text-sm tracking-wide">Agregar al carrito</span>
         </button>
@@ -3320,40 +3320,71 @@ function addRefresco(name, id, img, btn) {
 </div>
 
 
-<!-- A Mi Gusto Premium Modal -->
-<div id="amigusto-modal" class="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 hidden">
+<!-- Pizza A Mi Gusto Modal -->
+<div id="pizza-amigusto-modal" class="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 hidden">
     <div class="bg-gray-50 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col relative max-h-[90vh]">
-        <!-- Close Button Absolute -->
-        <button onclick="closeAmigustoModal()" class="absolute top-4 right-4 z-10 bg-white/30 backdrop-blur-md border border-white/40 hover:bg-white/80 rounded-full w-8 h-8 flex items-center justify-center text-white hover:text-gray-900 transition-all shadow-sm">
+        <button onclick="pizzaAmigustoApp.closeModal()" class="absolute top-4 right-4 z-10 bg-white/30 backdrop-blur-md border border-white/40 hover:bg-white/80 rounded-full w-8 h-8 flex items-center justify-center text-white hover:text-gray-900 transition-all shadow-sm">
             <i class="fas fa-times text-sm"></i>
         </button>
 
-        <!-- Product Image & Info -->
         <div class="relative h-40 w-full bg-gray-200 flex-shrink-0">
-            <img id="amigusto-modal-img" src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" alt="Construye tu producto" class="w-full h-full object-cover">
+            <img id="pizza-amigusto-modal-img" src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" alt="Construye tu pizza" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
             <div class="absolute bottom-4 left-5 right-5 text-white">
-                <h2 id="amigusto-modal-title" class="font-bold text-2xl tracking-wide mb-1">Construye tu pizza</h2>
-                <p class="text-xs text-gray-300 leading-relaxed">Elige tus ingredientes (Máximo <span id="amigusto-max-text">4</span>)</p>
+                <h2 id="pizza-amigusto-modal-title" class="font-bold text-2xl tracking-wide mb-1">Construye tu pizza</h2>
+                <p class="text-xs text-gray-300 leading-relaxed">Elige tus ingredientes (Máximo <span id="pizza-amigusto-max-text">4</span>)</p>
             </div>
         </div>
 
-        <!-- Modal Body / Ingredient Selection -->
         <div class="p-4 overflow-y-auto flex-grow bg-gray-50">
-            <div class="grid grid-cols-2 gap-3" id="amigusto-ingredients-grid">
+            <div class="grid grid-cols-2 gap-3" id="pizza-amigusto-ingredients-grid">
                 <!-- Injected by JS -->
             </div>
         </div>
 
-        <!-- Action Area -->
         <div class="p-5 border-t border-gray-200 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
             <div class="flex items-center justify-between mb-4">
                 <span class="text-sm font-bold text-gray-700">Ingredientes seleccionados:</span>
-                <span class="text-sm font-bold bg-gray-100 px-3 py-1 rounded-full text-gray-800 border border-gray-200"><span id="amigusto-count-text" class="text-red-600">0</span> / <span id="amigusto-limit-text">4</span></span>
+                <span class="text-sm font-bold bg-gray-100 px-3 py-1 rounded-full text-gray-800 border border-gray-200"><span id="pizza-amigusto-count-text" class="text-red-600">0</span> / <span id="pizza-amigusto-limit-text">4</span></span>
             </div>
-            <button onclick="addAmigustoToCart(amigustoApp.state.type)" class="w-full py-3.5 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 hover:shadow-[0_8px_20px_rgba(230,33,23,0.3)] hover:-translate-y-0.5 transition-all duration-300 shadow-sm text-sm tracking-wide flex items-center justify-center gap-2">
+            <button onclick="pizzaAmigustoApp.addToCart(this)" class="w-full py-3.5 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 hover:shadow-[0_8px_20px_rgba(230,33,23,0.3)] hover:-translate-y-0.5 transition-all duration-300 shadow-sm text-sm tracking-wide flex items-center justify-center gap-2">
                 <i class="fas fa-shopping-cart text-xs"></i>
-                Agregar al carrito - <span id="amigusto-price-text">S/ 0.00</span>
+                Agregar al carrito - <span id="pizza-amigusto-price-text">S/ 18.00</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Calzone A Mi Gusto Modal -->
+<div id="calzone-amigusto-modal" class="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 hidden">
+    <div class="bg-gray-50 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col relative max-h-[90vh]">
+        <button onclick="calzoneAmigustoApp.closeModal()" class="absolute top-4 right-4 z-10 bg-white/30 backdrop-blur-md border border-white/40 hover:bg-white/80 rounded-full w-8 h-8 flex items-center justify-center text-white hover:text-gray-900 transition-all shadow-sm">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+
+        <div class="relative h-40 w-full bg-gray-200 flex-shrink-0">
+            <img id="calzone-amigusto-modal-img" src="IM/CAL.jpg" alt="Construye tu calzone" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+            <div class="absolute bottom-4 left-5 right-5 text-white">
+                <h2 id="calzone-amigusto-modal-title" class="font-bold text-2xl tracking-wide mb-1">Construye tu calzone</h2>
+                <p class="text-xs text-gray-300 leading-relaxed">Elige tus ingredientes (Máximo <span id="calzone-amigusto-max-text">6</span>)</p>
+            </div>
+        </div>
+
+        <div class="p-4 overflow-y-auto flex-grow bg-gray-50">
+            <div class="grid grid-cols-2 gap-3" id="calzone-amigusto-ingredients-grid">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+
+        <div class="p-5 border-t border-gray-200 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-sm font-bold text-gray-700">Ingredientes seleccionados:</span>
+                <span class="text-sm font-bold bg-gray-100 px-3 py-1 rounded-full text-gray-800 border border-gray-200"><span id="calzone-amigusto-count-text" class="text-red-600">0</span> / <span id="calzone-amigusto-limit-text">6</span></span>
+            </div>
+            <button onclick="calzoneAmigustoApp.addToCart(this)" class="w-full py-3.5 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 hover:shadow-[0_8px_20px_rgba(230,33,23,0.3)] hover:-translate-y-0.5 transition-all duration-300 shadow-sm text-sm tracking-wide flex items-center justify-center gap-2">
+                <i class="fas fa-shopping-cart text-xs"></i>
+                Agregar al carrito - <span id="calzone-amigusto-price-text">S/ 31.00</span>
             </button>
         </div>
     </div>

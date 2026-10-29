@@ -1,57 +1,88 @@
 
-// --- A Mi Gusto App Logic ---
-const amigustoApp = {
+// ==========================================
+// INGREDIENTES EXCLUSIVOS DE LA PIZZA A MI GUSTO
+// ==========================================
+const ingredientesPizza = [
+    { id: 'p-aceitunas-n', name: 'Aceitunas Negras', img: 'IM/ING/ACEITUNA NEGRA.png' },
+    { id: 'p-aceitunas-v', name: 'Aceitunas Verdes', img: 'IM/ING/ACEITUNA VERDE.png' },
+    { id: 'p-aji', name: 'Ají', img: 'IM/ING/AJI.png' },
+    { id: 'p-albahaca', name: 'Albahaca', img: 'IM/ING/ALBAHACA.png' },
+    { id: 'p-cabanossi', name: 'Cabanossi', img: 'IM/ING/CABANOSSI.png' },
+    { id: 'p-cebolla', name: 'Cebolla', img: 'IM/ING/CEBOLLA.png' },
+    { id: 'p-cecina', name: 'Cecina', img: 'IM/ING/CECINA.png' },
+    { id: 'p-champinones', name: 'Champiñones', img: 'IM/ING/CHAMPIGÑONES.png' },
+    { id: 'p-chorizo', name: 'Chorizo', img: 'IM/ING/CHORIZO.png' },
+    { id: 'p-durazno', name: 'Durazno', img: 'IM/ING/DURAZNO.png' },
+    { id: 'p-esparrago', name: 'Espárrago', img: 'IM/ING/ESPARRAGO.png' },
+    { id: 'p-hotdog', name: 'Hot Dog', img: 'IM/ING/HOT DOG.png' },
+    { id: 'p-jamon', name: 'Jamón', img: 'IM/ING/JAMON.png' },
+    { id: 'p-papaya', name: 'Papaya', img: 'IM/ING/PAPAYA.png' },
+    { id: 'p-pepperoni', name: 'Pepperoni', img: 'IM/ING/PEPPERONI.png' },
+    { id: 'p-pimiento', name: 'Pimiento', img: 'IM/ING/PIMIENTO.png' },
+    { id: 'p-pina', name: 'Piña', img: 'IM/ING/PIÑA.png' },
+    { id: 'p-platano', name: 'Plátano', img: 'IM/ING/PLATANO.png' },
+    { id: 'p-pollo', name: 'Pollo', img: 'IM/ING/POLLO.png' },
+    { id: 'p-salame', name: 'Salame', img: 'IM/ING/SALAME.png' },
+    { id: 'p-salchicha', name: 'Salchicha', img: 'IM/ING/SALCHICHA.png' },
+    { id: 'p-tocino', name: 'Tocino', img: 'IM/ING/TOCINO.png' },
+    { id: 'p-tomate', name: 'Tomate en rodajas', img: 'IM/ING/TOMATE.png' }
+];
+
+// ==========================================
+// INGREDIENTES EXCLUSIVOS DEL CALZONE A MI GUSTO
+// ==========================================
+const ingredientesCalzone = [
+    { id: 'c-aceitunas-n', name: 'Aceitunas Negras', img: 'IM/ING/ACEITUNA NEGRA.png' },
+    { id: 'c-aceitunas-v', name: 'Aceitunas Verdes', img: 'IM/ING/ACEITUNA VERDE.png' },
+    { id: 'c-aji', name: 'Ají', img: 'IM/ING/AJI.png' },
+    { id: 'c-albahaca', name: 'Albahaca', img: 'IM/ING/ALBAHACA.png' },
+    { id: 'c-cabanossi', name: 'Cabanossi', img: 'IM/ING/CABANOSSI.png' },
+    { id: 'c-cebolla', name: 'Cebolla', img: 'IM/ING/CEBOLLA.png' },
+    { id: 'c-cecina', name: 'Cecina', img: 'IM/ING/CECINA.png' },
+    { id: 'c-champinones', name: 'Champiñones', img: 'IM/ING/CHAMPIGÑONES.png' },
+    { id: 'c-chorizo', name: 'Chorizo', img: 'IM/ING/CHORIZO.png' },
+    { id: 'c-durazno', name: 'Durazno', img: 'IM/ING/DURAZNO.png' },
+    { id: 'c-esparrago', name: 'Espárrago', img: 'IM/ING/ESPARRAGO.png' },
+    { id: 'c-hotdog', name: 'Hot Dog', img: 'IM/ING/HOT DOG.png' },
+    { id: 'c-jamon', name: 'Jamón', img: 'IM/ING/JAMON.png' },
+    { id: 'c-papaya', name: 'Papaya', img: 'IM/ING/PAPAYA.png' },
+    { id: 'c-pepperoni', name: 'Pepperoni', img: 'IM/ING/PEPPERONI.png' },
+    { id: 'c-pimiento', name: 'Pimiento', img: 'IM/ING/PIMIENTO.png' },
+    { id: 'c-pina', name: 'Piña', img: 'IM/ING/PIÑA.png' },
+    { id: 'c-platano', name: 'Plátano', img: 'IM/ING/PLATANO.png' },
+    { id: 'c-pollo', name: 'Pollo', img: 'IM/ING/POLLO.png' },
+    { id: 'c-salame', name: 'Salame', img: 'IM/ING/SALAME.png' },
+    { id: 'c-salchicha', name: 'Salchicha', img: 'IM/ING/SALCHICHA.png' },
+    { id: 'c-tocino', name: 'Tocino', img: 'IM/ING/TOCINO.png' },
+    { id: 'c-tomate', name: 'Tomate en rodajas', img: 'IM/ING/TOMATE.png' }
+];
+
+// --- Pizza A Mi Gusto App Logic ---
+const pizzaAmigustoApp = {
     state: {
         isOpen: false,
-        type: 'pizza', // 'pizza' or 'calzone'
         limit: 4,
         selected: [],
         currentSizeName: '',
-        currentPrice: 0,
-        currentImg: ''
+        currentPrice: 18.00,
+        currentImg: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80'
     },
 
-    ingredients: [
-        { id: 'am-aceitunas-n', name: 'Aceitunas Negras', img: 'IM/ING/ACEITUNA NEGRA.png' },
-        { id: 'am-aceitunas-v', name: 'Aceitunas Verdes', img: 'IM/ING/ACEITUNA VERDE.png' },
-        { id: 'am-aji', name: 'Ají', img: 'IM/ING/AJI.png' },
-        { id: 'am-albahaca', name: 'Albahaca', img: 'IM/ING/ALBAHACA.png' },
-        { id: 'am-cabanossi', name: 'Cabanossi', img: 'IM/ING/CABANOSSI.png' },
-        { id: 'am-cebolla', name: 'Cebolla', img: 'IM/ING/CEBOLLA.png' },
-        { id: 'am-cecina', name: 'Cecina', img: 'IM/ING/CECINA.png' },
-        { id: 'am-champinones', name: 'Champiñones', img: 'IM/ING/CHAMPIGÑONES.png' },
-        { id: 'am-chorizo', name: 'Chorizo', img: 'IM/ING/CHORIZO.png' },
-        { id: 'am-durazno', name: 'Durazno', img: 'IM/ING/DURAZNO.png' },
-        { id: 'am-esparrago', name: 'Espárrago', img: 'IM/ING/ESPARRAGO.png' },
-        { id: 'am-hotdog', name: 'Hot Dog', img: 'IM/ING/HOT DOG.png' },
-        { id: 'am-jamon', name: 'Jamón', img: 'IM/ING/JAMON.png' },
-        { id: 'am-papaya', name: 'Papaya', img: 'IM/ING/PAPAYA.png' },
-        { id: 'am-pepperoni', name: 'Pepperoni', img: 'IM/ING/PEPPERONI.png' },
-        { id: 'am-pimiento', name: 'Pimiento', img: 'IM/ING/PIMIENTO.png' },
-        { id: 'am-pina', name: 'Piña', img: 'IM/ING/PIÑA.png' },
-        { id: 'am-platano', name: 'Plátano', img: 'IM/ING/PLATANO.png' },
-        { id: 'am-pollo', name: 'Pollo', img: 'IM/ING/POLLO.png' },
-        { id: 'am-salame', name: 'Salame', img: 'IM/ING/SALAME.png' },
-        { id: 'am-salchicha', name: 'Salchicha', img: 'IM/ING/SALCHICHA.png' },
-        { id: 'am-tocino', name: 'Tocino', img: 'IM/ING/TOCINO.png' },
-        { id: 'am-tomate', name: 'Tomate en rodajas', img: 'IM/ING/TOMATE.png' }
-    ],
+    ingredients: ingredientesPizza,
 
     init() {
-        const grid = document.getElementById('amigusto-ingredients-grid');
+        const grid = document.getElementById('pizza-amigusto-ingredients-grid');
         if (!grid) return;
 
-        // In the design, cards have a white background, grey border, rounded corners, image on left/top, text and add button
         grid.innerHTML = this.ingredients.map(ing => `
-            <div id="amigusto-card-${ing.id}" class="bg-white border-2 border-gray-100 rounded-xl overflow-hidden shadow-sm hover:border-gray-200 transition-colors flex flex-col">
+            <div id="pizza-card-${ing.id}" class="bg-white border-2 border-gray-100 rounded-xl overflow-hidden shadow-sm hover:border-gray-200 transition-colors flex flex-col">
                 <div class="h-24 w-full bg-gray-100 overflow-hidden relative">
                     <img src="${ing.img}" alt="${ing.name}" class="w-full h-full object-cover">
-                    <!-- Overlay if selected -->
-                    <div id="amigusto-overlay-${ing.id}" class="absolute inset-0 bg-red-600/20 hidden"></div>
+                    <div id="pizza-overlay-${ing.id}" class="absolute inset-0 bg-red-600/20 hidden"></div>
                 </div>
                 <div class="p-3 flex flex-col flex-grow items-center text-center">
                     <span class="text-[11px] font-bold text-gray-800 leading-tight mb-2 flex-grow line-clamp-2">${ing.name}</span>
-                    <button id="amigusto-btn-${ing.id}" onclick="amigustoApp.toggleIngredient('${ing.id}')" class="w-full py-1.5 rounded-lg border border-gray-200 text-[10px] font-bold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5">
+                    <button id="pizza-btn-${ing.id}" onclick="pizzaAmigustoApp.toggleIngredient('${ing.id}')" class="w-full py-1.5 rounded-lg border border-gray-200 text-[10px] font-bold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5">
                         <div class="w-3.5 h-3.5 rounded-full border border-gray-300 flex items-center justify-center">
                             <div class="w-1.5 h-1.5 rounded-full bg-transparent"></div>
                         </div>
@@ -62,59 +93,39 @@ const amigustoApp = {
         `).join('');
     },
 
-    openModal(type) {
-        if (this.state.type !== type) {
-            this.state.selected = [];
-            this.state.type = type;
-        }
-
-        let name, price, img, limit;
-        let modalTitle = 'Construye tu producto';
-        let modalImg = '';
-
-        if (type === 'pizza') {
-            const sizeBtn = document.querySelector(`button[data-pizza-id="4"].selected-size`);
-            if (!sizeBtn) {
-                alert('Seleccione un tamaño primero (Personal, Mediana o Familiar) para la pizza A Mi Gusto.');
-                return;
-            }
-
-            name = sizeBtn.getAttribute('data-name');
-            price = parseFloat(sizeBtn.getAttribute('data-price'));
-            img = sizeBtn.getAttribute('data-img');
-            const isPersonal = name.includes('Personal');
-            limit = isPersonal ? 4 : 6;
-            modalTitle = 'Construye tu pizza';
-            modalImg = img;
-        } else if (type === 'calzone') {
-            name = 'Calzone A Mi Gusto';
-            price = 31.00;
-            img = 'IM/CAL.jpg';
-            limit = 6;
-            modalTitle = 'Construye tu calzone';
-            modalImg = img;
-        } else {
-            return;
-        }
-
+    updateSizeLimit(limit, sizeName, price, img) {
         this.state.limit = limit;
-        this.state.currentSizeName = name;
+        this.state.currentSizeName = sizeName;
         this.state.currentPrice = price;
         this.state.currentImg = img;
 
-        // Trim selected if switching size down
         if (this.state.selected.length > this.state.limit) {
             this.state.selected = this.state.selected.slice(0, this.state.limit);
         }
-
-        const titleEl = document.getElementById('amigusto-modal-title');
-        const imgEl = document.getElementById('amigusto-modal-img');
-        if (titleEl) titleEl.innerText = modalTitle;
-        if (imgEl) imgEl.src = modalImg;
-
         this.updateUI();
+    },
 
-        const modal = document.getElementById('amigusto-modal');
+    openModal() {
+        const sizeBtn = document.querySelector(`button[data-pizza-id="4"].selected-size`);
+        if (!sizeBtn) {
+            alert('Seleccione un tamaño primero (Personal, Mediana o Familiar) para la pizza A Mi Gusto.');
+            return;
+        }
+
+        const name = sizeBtn.getAttribute('data-name');
+        const price = parseFloat(sizeBtn.getAttribute('data-price'));
+        const img = sizeBtn.getAttribute('data-img');
+        const isPersonal = name.includes('Personal');
+        const limit = isPersonal ? 4 : 6;
+
+        this.updateSizeLimit(limit, name, price, img);
+
+        const titleEl = document.getElementById('pizza-amigusto-modal-title');
+        const imgEl = document.getElementById('pizza-amigusto-modal-img');
+        if (titleEl) titleEl.innerText = `Construye tu pizza (${name.replace('A Mi Gusto ', '')})`;
+        if (imgEl) imgEl.src = img;
+
+        const modal = document.getElementById('pizza-amigusto-modal');
         if (modal) {
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -122,7 +133,7 @@ const amigustoApp = {
     },
 
     closeModal() {
-        const modal = document.getElementById('amigusto-modal');
+        const modal = document.getElementById('pizza-amigusto-modal');
         if (modal) {
             modal.classList.add('hidden');
             document.body.style.overflow = '';
@@ -137,28 +148,28 @@ const amigustoApp = {
             if (this.state.selected.length < this.state.limit) {
                 this.state.selected.push(id);
             } else {
-                alert(`Solo puedes escoger hasta ${this.state.limit} ingredientes en el tamaño seleccionado.`);
+                alert(`Solo puedes escoger hasta ${this.state.limit} ingredientes para la pizza en el tamaño seleccionado.`);
             }
         }
         this.updateUI();
     },
 
     updateUI() {
-        const maxTexts = document.querySelectorAll('#amigusto-max-text, #amigusto-limit-text');
+        const maxTexts = document.querySelectorAll('#pizza-amigusto-max-text, #pizza-amigusto-limit-text');
         maxTexts.forEach(el => el.innerText = this.state.limit);
 
-        const countText = document.getElementById('amigusto-count-text');
+        const countText = document.getElementById('pizza-amigusto-count-text');
         if (countText) countText.innerText = this.state.selected.length;
 
-        const priceText = document.getElementById('amigusto-price-text');
+        const priceText = document.getElementById('pizza-amigusto-price-text');
         if (priceText) priceText.innerText = `S/ ${this.state.currentPrice.toFixed(2)}`;
 
         this.ingredients.forEach(ing => {
-            const card = document.getElementById(`amigusto-card-${ing.id}`);
-            const btn = document.getElementById(`amigusto-btn-${ing.id}`);
-            const overlay = document.getElementById(`amigusto-overlay-${ing.id}`);
+            const card = document.getElementById(`pizza-card-${ing.id}`);
+            const btn = document.getElementById(`pizza-btn-${ing.id}`);
+            const overlay = document.getElementById(`pizza-overlay-${ing.id}`);
 
-            if(!card || !btn || !overlay) return;
+            if (!card || !btn || !overlay) return;
 
             if (this.state.selected.includes(ing.id)) {
                 card.classList.add('border-red-500');
@@ -190,58 +201,181 @@ const amigustoApp = {
         });
     },
 
-    addToCart(directType, btn = null) {
-        // If triggered directly from "Agregar al carrito" on the card
-        if (directType && directType !== this.state.type) {
-             this.state.selected = [];
-             this.state.type = directType;
-             if (directType === 'pizza') {
-                  const sizeBtn = document.querySelector(`button[data-pizza-id="4"].selected-size`);
-                  if (!sizeBtn) {
-                      alert('Seleccione un tamaño primero (Personal, Mediana o Familiar) para la pizza A Mi Gusto.');
-                      return;
-                  }
-                  this.state.currentSizeName = sizeBtn.getAttribute('data-name');
-                  this.state.currentPrice = parseFloat(sizeBtn.getAttribute('data-price'));
-                  this.state.currentImg = sizeBtn.getAttribute('data-img');
-             } else if (directType === 'calzone') {
-                  this.state.currentSizeName = 'Calzone A Mi Gusto';
-                  this.state.currentPrice = 31.00;
-                  this.state.currentImg = 'IM/CAL.jpg';
-             }
+    addToCart(btn = null) {
+        const sizeBtn = document.querySelector(`button[data-pizza-id="4"].selected-size`);
+        if (!sizeBtn) {
+            alert('Seleccione un tamaño primero (Personal, Mediana o Familiar) para la pizza A Mi Gusto.');
+            return;
         }
 
-        if (this.state.selected.length === 0) {
-            // Require at least one ingredient? Usually up to max. We'll allow empty or prompt.
-            if (!confirm(`No has seleccionado ningún ingrediente. ¿Deseas agregar el ${this.state.type} así?`)) {
-                return;
-            }
-        }
+        this.state.currentSizeName = sizeBtn.getAttribute('data-name');
+        this.state.currentPrice = parseFloat(sizeBtn.getAttribute('data-price'));
+        this.state.currentImg = sizeBtn.getAttribute('data-img');
 
         let desc = 'Sin ingredientes adicionales';
         if (this.state.selected.length > 0) {
-            const names = this.state.selected.map(id => this.ingredients.find(i => i.id === id).name);
+            const names = this.state.selected.map(id => {
+                const item = this.ingredients.find(i => i.id === id);
+                return item ? item.name : id;
+            });
             desc = "Ingredientes elegidos: " + names.join(', ');
         }
 
-        const targetBtn = btn || (this.state.type === 'pizza' ? document.getElementById('add-btn-4') : null);
+        const targetBtn = btn || document.getElementById('add-btn-4');
         cartApp.addItem(this.state.currentSizeName, this.state.currentPrice, this.state.currentImg, desc, targetBtn);
         this.closeModal();
 
-        // Reset
         this.state.selected = [];
         this.updateUI();
     }
 };
 
+// --- Calzone A Mi Gusto App Logic ---
+const calzoneAmigustoApp = {
+    state: {
+        isOpen: false,
+        limit: 6,
+        selected: [],
+        name: 'Calzone A Mi Gusto',
+        price: 31.00,
+        img: 'IM/CAL.jpg'
+    },
+
+    ingredients: ingredientesCalzone,
+
+    init() {
+        const grid = document.getElementById('calzone-amigusto-ingredients-grid');
+        if (!grid) return;
+
+        grid.innerHTML = this.ingredients.map(ing => `
+            <div id="calzone-card-${ing.id}" class="bg-white border-2 border-gray-100 rounded-xl overflow-hidden shadow-sm hover:border-gray-200 transition-colors flex flex-col">
+                <div class="h-24 w-full bg-gray-100 overflow-hidden relative">
+                    <img src="${ing.img}" alt="${ing.name}" class="w-full h-full object-cover">
+                    <div id="calzone-overlay-${ing.id}" class="absolute inset-0 bg-red-600/20 hidden"></div>
+                </div>
+                <div class="p-3 flex flex-col flex-grow items-center text-center">
+                    <span class="text-[11px] font-bold text-gray-800 leading-tight mb-2 flex-grow line-clamp-2">${ing.name}</span>
+                    <button id="calzone-btn-${ing.id}" onclick="calzoneAmigustoApp.toggleIngredient('${ing.id}')" class="w-full py-1.5 rounded-lg border border-gray-200 text-[10px] font-bold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5">
+                        <div class="w-3.5 h-3.5 rounded-full border border-gray-300 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-transparent"></div>
+                        </div>
+                        Seleccionar
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    openModal() {
+        this.updateUI();
+        const modal = document.getElementById('calzone-amigusto-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+    },
+
+    closeModal() {
+        const modal = document.getElementById('calzone-amigusto-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    },
+
+    toggleIngredient(id) {
+        const idx = this.state.selected.indexOf(id);
+        if (idx > -1) {
+            this.state.selected.splice(idx, 1);
+        } else {
+            if (this.state.selected.length < this.state.limit) {
+                this.state.selected.push(id);
+            } else {
+                alert(`Solo puedes escoger hasta ${this.state.limit} ingredientes para el calzone.`);
+            }
+        }
+        this.updateUI();
+    },
+
+    updateUI() {
+        const maxTexts = document.querySelectorAll('#calzone-amigusto-max-text, #calzone-amigusto-limit-text');
+        maxTexts.forEach(el => el.innerText = this.state.limit);
+
+        const countText = document.getElementById('calzone-amigusto-count-text');
+        if (countText) countText.innerText = this.state.selected.length;
+
+        const priceText = document.getElementById('calzone-amigusto-price-text');
+        if (priceText) priceText.innerText = `S/ ${this.state.price.toFixed(2)}`;
+
+        this.ingredients.forEach(ing => {
+            const card = document.getElementById(`calzone-card-${ing.id}`);
+            const btn = document.getElementById(`calzone-btn-${ing.id}`);
+            const overlay = document.getElementById(`calzone-overlay-${ing.id}`);
+
+            if (!card || !btn || !overlay) return;
+
+            if (this.state.selected.includes(ing.id)) {
+                card.classList.add('border-red-500');
+                card.classList.remove('border-gray-100');
+
+                btn.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
+                btn.classList.remove('text-gray-600', 'border-gray-200', 'hover:bg-gray-50', 'bg-white');
+                btn.innerHTML = `
+                    <div class="w-3.5 h-3.5 rounded-full border-2 border-red-500 flex items-center justify-center">
+                        <div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+                    </div>
+                    Seleccionado
+                `;
+                overlay.classList.remove('hidden');
+            } else {
+                card.classList.remove('border-red-500');
+                card.classList.add('border-gray-100');
+
+                btn.classList.remove('bg-red-50', 'text-red-700', 'border-red-200');
+                btn.classList.add('text-gray-600', 'border-gray-200', 'hover:bg-gray-50', 'bg-white');
+                btn.innerHTML = `
+                    <div class="w-3.5 h-3.5 rounded-full border border-gray-300 flex items-center justify-center">
+                        <div class="w-1.5 h-1.5 rounded-full bg-transparent"></div>
+                    </div>
+                    Seleccionar
+                `;
+                overlay.classList.add('hidden');
+            }
+        });
+    },
+
+    addToCart(btn = null) {
+        let desc = 'Sin ingredientes adicionales';
+        if (this.state.selected.length > 0) {
+            const names = this.state.selected.map(id => {
+                const item = this.ingredients.find(i => i.id === id);
+                return item ? item.name : id;
+            });
+            desc = "Ingredientes elegidos: " + names.join(', ');
+        }
+
+        cartApp.addItem(this.state.name, this.state.price, this.state.img, desc, btn);
+        this.closeModal();
+
+        this.state.selected = [];
+        this.updateUI();
+    }
+};
+
+// Backward-compatibility wrappers
 function openAmigustoModal(type) {
-    amigustoApp.openModal(type);
+    if (type === 'pizza') pizzaAmigustoApp.openModal();
+    else if (type === 'calzone') calzoneAmigustoApp.openModal();
 }
+
 function closeAmigustoModal() {
-    amigustoApp.closeModal();
+    pizzaAmigustoApp.closeModal();
+    calzoneAmigustoApp.closeModal();
 }
+
 function addAmigustoToCart(type, btn) {
-    amigustoApp.addToCart(type, btn);
+    if (type === 'pizza') pizzaAmigustoApp.addToCart(btn);
+    else if (type === 'calzone') calzoneAmigustoApp.addToCart(btn);
 }
 
 // Tailwind configuration and other custom JS
@@ -777,7 +911,8 @@ const calzoneApp = {
 
 // Initialize apps when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    amigustoApp.init();
+    pizzaAmigustoApp.init();
+    calzoneAmigustoApp.init();
     cartApp.init();
     calzoneApp.init();
     vegApp.init();

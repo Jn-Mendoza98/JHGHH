@@ -1627,7 +1627,7 @@
             </div>
         </div>
 
-        <!-- Pizza 27 -->
+        <!-- Pizza ARMA TU PIZZA 27 -->
         <div class="bg-white rounded-[24px] shadow-[0_4px_24px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden flex flex-col hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-all duration-500 group relative">
             <div class="h-48 overflow-hidden relative rounded-t-[24px] bg-gray-100">
                 <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&amp;fit=crop&amp;w=600&amp;q=80" alt="Arma Tu Pizza" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
@@ -1635,36 +1635,35 @@
             </div>
             <div class="p-6 flex flex-col flex-grow bg-white relative z-10 -mt-2 rounded-t-[24px]">
                 <h4 class="font-bold text-gray-800 text-xl mb-1">Arma Tu Pizza</h4>
-                <p class="text-gray-500 text-xs mb-5 line-clamp-2 leading-relaxed">Porque elegir una... si puedes elegir a las dos </p>
+                <p class="text-gray-500 text-xs mb-5 line-clamp-2 leading-relaxed">Elige dos sabores diferentes en una sola pizza (mitad y mitad).</p>
 
                 <div class="mt-auto">
                     <p class="text-[10px] text-gray-400 mb-3 font-semibold uppercase tracking-widest">Tamaño ideal para ti</p>
                     <div class="flex gap-2 mb-2">
-
-                        <button onclick="selectPizzaSize(this, '27')" data-name="Arma Tu Pizza (Personal)" data-price="25.00" data-img="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&amp;fit=crop&amp;w=600&amp;q=80" class="size-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all duration-300 relative border-2 border-transparent w-full bg-gray-50 text-gray-500 hover:bg-gray-100" data-pizza-id="27">
-
-                            <span class="text-[10px] sm:text-[11px] font-bold tracking-wider z-10">PERSONAL</span>
-                            <span class="text-xs font-extrabold mt-0.5  z-10 price-label">S/25.00</span>
-                        </button>
                         <button onclick="selectPizzaSize(this, '27')" data-name="Arma Tu Pizza (Mediana)" data-price="43.00" data-img="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&amp;fit=crop&amp;w=600&amp;q=80" class="size-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all duration-300 relative border-2 border-transparent w-full bg-gray-50 text-gray-500 hover:bg-gray-100" data-pizza-id="27">
                             <span class="text-[10px] sm:text-[11px] font-bold tracking-wider z-10">MEDIANA</span>
-                            <span class="text-xs font-extrabold mt-0.5  z-10 price-label">S/43.00</span>
+                            <span class="text-xs font-extrabold mt-0.5 z-10 price-label">S/43.00</span>
                         </button>
                         <button onclick="selectPizzaSize(this, '27')" data-name="Arma Tu Pizza (Familiar)" data-price="55.00" data-img="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&amp;fit=crop&amp;w=600&amp;q=80" class="size-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all duration-300 relative border-2 border-transparent w-full bg-gray-50 text-gray-500 hover:bg-gray-100" data-pizza-id="27">
-
                             <span class="text-[10px] sm:text-[11px] font-bold tracking-wider z-10">FAMILIAR</span>
-                            <span class="text-xs font-extrabold mt-0.5  z-10 price-label">S/55.00</span>
+                            <span class="text-xs font-extrabold mt-0.5 z-10 price-label">S/55.00</span>
                         </button>
                     </div>
 
-                    <button id="add-btn-27" onclick="alert('Seleccione un tamaño antes de agregar al carrito')" class="w-full mt-5 bg-gradient-to-r from-primary to-red-700 text-white py-3 px-4 rounded-xl font-bold flex items-center justify-center hover:shadow-[0_8px_20px_rgba(230,33,23,0.4)] hover:-translate-y-0.5 transition-all duration-300 group">
+                    <!-- Botón para abrir el flujo de selección de sabores -->
+                    <div class="mt-2 text-center w-full">
+                        <button id="armatupizza-custom-btn" onclick="armaTuPizzaApp.openFlow()" class="w-full text-xs bg-gray-100 text-gray-700 font-bold py-2 px-3 rounded-lg hover:bg-gray-200 transition-colors uppercase tracking-wide border border-gray-200 shadow-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-pizza-slice"></i> Elegir Sabores
+                        </button>
+                    </div>
+
+                    <button id="add-btn-27" onclick="armaTuPizzaApp.handleCardAdd(this)" class="w-full mt-5 bg-gradient-to-r from-primary to-red-700 text-white py-3 px-4 rounded-xl font-bold flex items-center justify-center hover:shadow-[0_8px_20px_rgba(230,33,23,0.4)] hover:-translate-y-0.5 transition-all duration-300 group">
                         <div class="flex items-center gap-2">
                             <div class="bg-white/20 p-1.5 rounded-lg group-hover:scale-110 transition-transform">
                                 <i class="fas fa-shopping-cart text-sm"></i>
                             </div>
                             <span class="text-sm tracking-wide">Agregar al carrito</span>
                         </div>
-
                     </button>
                 </div>
             </div>
@@ -3319,6 +3318,61 @@ function addRefresco(name, id, img, btn) {
     </div>
 </div>
 
+
+<!-- Arma Tu Pizza Flow Modal -->
+<div id="armatupizza-modal" class="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-gray-50 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col relative max-h-[92vh]">
+        <!-- Close Button -->
+        <button onclick="armaTuPizzaApp.closeModal()" class="absolute top-3.5 right-3.5 z-20 bg-black/40 hover:bg-black/70 backdrop-blur-md rounded-full w-8 h-8 flex items-center justify-center text-white transition-all shadow-sm">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+
+        <!-- Header with Title & Step Indicator -->
+        <div class="bg-darker text-white px-5 py-4 border-b border-gray-800">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="text-primary text-xl font-bold">🍕</span>
+                <div>
+                    <h2 class="font-bold text-lg sm:text-xl tracking-wide text-white leading-tight">Arma Tu Pizza</h2>
+                    <p class="text-[11px] sm:text-xs text-gray-400">Combina dos sabores en una sola pizza (mitad y mitad)</p>
+                </div>
+            </div>
+
+            <!-- Steps Progress Bar -->
+            <div class="grid grid-cols-4 gap-2 pt-2 border-t border-gray-800/80">
+                <!-- Step 1 Indicator -->
+                <div id="armatupizza-step-ind-1" class="flex items-center gap-2 text-xs font-bold text-white transition-colors">
+                    <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-[11px] flex-shrink-0">1</span>
+                    <span class="truncate hidden sm:inline">Tamaño</span>
+                </div>
+                <!-- Step 2 Indicator -->
+                <div id="armatupizza-step-ind-2" class="flex items-center gap-2 text-xs font-bold text-gray-400 transition-colors">
+                    <span class="w-6 h-6 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center text-[11px] flex-shrink-0">2</span>
+                    <span class="truncate hidden sm:inline">Sabor 1</span>
+                </div>
+                <!-- Step 3 Indicator -->
+                <div id="armatupizza-step-ind-3" class="flex items-center gap-2 text-xs font-bold text-gray-400 transition-colors">
+                    <span class="w-6 h-6 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center text-[11px] flex-shrink-0">3</span>
+                    <span class="truncate hidden sm:inline">Sabor 2</span>
+                </div>
+                <!-- Step 4 Indicator -->
+                <div id="armatupizza-step-ind-4" class="flex items-center gap-2 text-xs font-bold text-gray-400 transition-colors">
+                    <span class="w-6 h-6 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center text-[11px] flex-shrink-0">4</span>
+                    <span class="truncate hidden sm:inline">Resumen</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Dynamic Body Content -->
+        <div id="armatupizza-modal-body" class="p-4 sm:p-6 overflow-y-auto flex-grow bg-gray-50">
+            <!-- Step content rendered via JS -->
+        </div>
+
+        <!-- Modal Footer Navigation -->
+        <div id="armatupizza-modal-footer" class="p-4 border-t border-gray-200 bg-white flex items-center justify-between gap-3 shadow-inner">
+            <!-- Footer buttons rendered via JS -->
+        </div>
+    </div>
+</div>
 
 <!-- Pizza A Mi Gusto Modal -->
 <div id="pizza-amigusto-modal" class="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 hidden">

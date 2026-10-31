@@ -110,6 +110,70 @@ const armaTuPizzaApp = {
         return text.includes('aceitun');
     },
 
+    orderFlavorsBySearch(flavorsList, query) {
+        const trimmedQuery = (query || '').trim().toLowerCase();
+        if (!trimmedQuery) {
+            return flavorsList.slice();
+        }
+
+        const matchingFlavors = flavorsList.filter(f => f.name.toLowerCase().includes(trimmedQuery));
+        matchingFlavors.sort((a, b) => {
+            const aStarts = a.name.toLowerCase().startsWith(trimmedQuery);
+            const bStarts = b.name.toLowerCase().startsWith(trimmedQuery);
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+            return flavorsList.indexOf(a) - flavorsList.indexOf(b);
+        });
+
+        const nonMatchingFlavors = flavorsList.filter(f => !f.name.toLowerCase().includes(trimmedQuery));
+        nonMatchingFlavors.sort((a, b) => flavorsList.indexOf(a) - flavorsList.indexOf(b));
+
+        return [...matchingFlavors, ...nonMatchingFlavors];
+    },
+
+    handleSearch1(query) {
+        this.state.searchTerm1 = query;
+        const grid = document.getElementById('armatupizza-flavor-grid');
+        if (!grid) {
+            this.render();
+            return;
+        }
+
+        const cards = Array.from(grid.querySelectorAll('.pizza-flavor-card'));
+        const cardMap = new Map();
+        cards.forEach(c => cardMap.set(c.getAttribute('data-flavor-name'), c));
+
+        const ordered = this.orderFlavorsBySearch(this.flavors, query);
+        ordered.forEach(f => {
+            const el = cardMap.get(f.name);
+            if (el) {
+                grid.appendChild(el);
+            }
+        });
+    },
+
+    handleSearch2(query) {
+        this.state.searchTerm2 = query;
+        const grid = document.getElementById('armatupizza-flavor-grid');
+        if (!grid) {
+            this.render();
+            return;
+        }
+
+        const cards = Array.from(grid.querySelectorAll('.pizza-flavor-card'));
+        const cardMap = new Map();
+        cards.forEach(c => cardMap.set(c.getAttribute('data-flavor-name'), c));
+
+        const availableBase = this.flavors.filter(f => !this.state.flavor1 || f.name !== this.state.flavor1.name);
+        const ordered = this.orderFlavorsBySearch(availableBase, query);
+        ordered.forEach(f => {
+            const el = cardMap.get(f.name);
+            if (el) {
+                grid.appendChild(el);
+            }
+        });
+    },
+
     init() {
         // sync from card if preselected
     },
@@ -538,11 +602,7 @@ const armaTuPizzaApp = {
     },
 
     renderStep2(body, footer) {
-        const query = (this.state.searchTerm1 || '').toLowerCase().trim();
-        const filteredFlavors = this.flavors.filter(f =>
-            f.name.toLowerCase().includes(query) || (f.desc && f.desc.toLowerCase().includes(query))
-        );
-
+        const orderedFlavors = this.orderFlavorsBySearch(this.flavors, this.state.searchTerm1 || '');
         const canContinue = this.state.flavor1 && (!this.hasOlives(this.state.flavor1) || !!this.state.olive1);
 
         body.innerHTML = `
@@ -562,12 +622,12 @@ const armaTuPizzaApp = {
                         id="armatupizza-search-1"
                         placeholder="Buscar sabor de pizza..."
                         value="${this.state.searchTerm1 || ''}"
-                        oninput="armaTuPizzaApp.state.searchTerm1 = this.value; armaTuPizzaApp.render();"
+                        oninput="armaTuPizzaApp.handleSearch1(this.value)"
                         class="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
                 </div>
 
                 <div id="armatupizza-flavor-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1">
-                    ${filteredFlavors.map(flavor => {
+                    ${orderedFlavors.map(flavor => {
                         const isSelected = this.state.flavor1 && this.state.flavor1.name === flavor.name;
                         const hasOlive = this.hasOlives(flavor);
                         const selectedOlive = isSelected ? this.state.olive1 : null;
@@ -631,10 +691,8 @@ const armaTuPizzaApp = {
     },
 
     renderStep3(body, footer) {
-        const query = (this.state.searchTerm2 || '').toLowerCase().trim();
-        const availableFlavors = this.flavors
-            .filter(f => !this.state.flavor1 || f.name !== this.state.flavor1.name)
-            .filter(f => f.name.toLowerCase().includes(query) || (f.desc && f.desc.toLowerCase().includes(query)));
+        const availableBase = this.flavors.filter(f => !this.state.flavor1 || f.name !== this.state.flavor1.name);
+        const orderedFlavors = this.orderFlavorsBySearch(availableBase, this.state.searchTerm2 || '');
 
         const canContinue = this.state.flavor2 && (!this.hasOlives(this.state.flavor2) || !!this.state.olive2);
         const flavor1OliveText = this.state.olive1 ? ` (${this.state.olive1})` : '';
@@ -656,12 +714,12 @@ const armaTuPizzaApp = {
                         id="armatupizza-search-2"
                         placeholder="Buscar sabor de pizza..."
                         value="${this.state.searchTerm2 || ''}"
-                        oninput="armaTuPizzaApp.state.searchTerm2 = this.value; armaTuPizzaApp.render();"
+                        oninput="armaTuPizzaApp.handleSearch2(this.value)"
                         class="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
                 </div>
 
                 <div id="armatupizza-flavor-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1">
-                    ${availableFlavors.map(flavor => {
+                    ${orderedFlavors.map(flavor => {
                         const isSelected = this.state.flavor2 && this.state.flavor2.name === flavor.name;
                         const hasOlive = this.hasOlives(flavor);
                         const selectedOlive = isSelected ? this.state.olive2 : null;

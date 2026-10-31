@@ -57,6 +57,430 @@ const ingredientesCalzone = [
     { id: 'c-tomate', name: 'Tomate en rodajas', img: 'IM/ING/TOMATE.png' }
 ];
 
+// ==========================================
+// ARMA TU PIZZA APP LOGIC (Flujo de 3 pasos + Vista previa)
+// ==========================================
+const armaTuPizzaApp = {
+    flavors: [
+        { name: 'Americana', image: 'IM/PIZZAS/AMERICANA.png', desc: 'Jamón y queso.' },
+        { name: 'América con Cebolla', image: 'IM/PIZZAS/AMERICANA CON CEBOLLA.png', desc: 'Jamón, queso y cebolla.' },
+        { name: 'Aceituna', image: 'IM/PIZZAS/ACEITUNA.png', desc: 'Queso mozzarella y aceitunas.' },
+        { name: 'Aceituna con Cebolla', image: 'IM/PIZZAS/AACEITUNA CON CEBOLLA.png', desc: 'Queso mozzarella, aceitunas y cebolla.' },
+        { name: 'A Mi Gusto', image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80', desc: 'Ingredientes al gusto del cliente.' },
+        { name: 'Arabe', image: 'IM/PIZZAS/ARABE.png', desc: 'Cebolla, aceituna, tocino y pollo.' },
+        { name: 'Tocino', image: 'IM/PIZZAS/TOCINO SIN CEBOLLA.png', desc: 'Queso mozzarella y tocino crujiente.' },
+        { name: 'Tocino con Cebolla', image: 'IM/PIZZAS/TOCINO CON CEBOLLA.png', desc: 'Tocino crocante, queso mozzarella y cebolla.' },
+        { name: 'Chorizo Macho', image: 'IM/PIZZAS/CHORIZO MACHO.png', desc: 'Chorizo y cebolla.' },
+        { name: 'Chorizo Súper Macho', image: 'IM/PIZZAS/CHORIZO SUPER MACHO.png', desc: 'Chorizo, cebolla y ají.' },
+        { name: 'De Pollo', image: 'IM/PIZZAS/POLLO.png', desc: 'Trozos de pechuga de pollo y queso.' },
+        { name: 'De La Granja', image: 'IM/PIZZAS/DE LA GRANJA.png', desc: 'Cebolla, aceituna y pollo.' },
+        { name: 'Napolitana', image: 'IM/PIZZAS/NAPOLITANA.png', desc: 'Abundante queso mozzarella y salsa especial.' },
+        { name: 'Especial', image: 'IM/PIZZAS/ESPECIAL.png', desc: 'Cebolla, aceitunas, chorizo, tocino y jamón.' },
+        { name: 'De Mi Selva', image: 'IM/PIZZAS/DE MI SELVA.png', desc: 'Cecina, chorizo y champiñones.' },
+        { name: 'Champiñones', image: 'IM/PIZZAS/CHAMPIÑONES.png', desc: 'Solo champiñones frescos y queso.' },
+        { name: 'Champiñones con Pimiento', image: 'IM/PIZZAS/CAHMPIÑENES CON PIMIENTO.png', desc: 'Champiñones, pimiento y queso.' },
+        { name: 'De La Casa', image: 'IM/PIZZAS/DE LA CASA.png', desc: 'Cebolla, pimiento, champiñones, chorizo, jamón y tocino.' },
+        { name: 'Vegetariana', image: 'IM/PIZZAS/VEGETARIANA.png', desc: 'Cebolla, pimiento, tomate, espárragos, champiñones, albahaca y aceitunas.' },
+        { name: 'Hawayana', image: 'IM/PIZZAS/HAWAYANA.png', desc: 'Piña, durazno y jamón.' },
+        { name: 'Margarita', image: 'IM/PIZZAS/MARGARITA.png', desc: 'Tomate en rodajas y albahaca fresca.' },
+        { name: 'Miski Pizza', image: 'IM/PIZZAS/MISKY PIZZA.png', desc: 'Selección de frutas dulces y queso.' },
+        { name: 'Pepperoni', image: 'IM/PIZZAS/PEPPERONI.png', desc: 'Abundante pepperoni y queso mozzarella.' },
+        { name: 'Salchicha', image: 'IM/PIZZAS/SALCHICHA.png', desc: 'Salchicha especial y queso.' },
+        { name: 'Cabanossi', image: 'IM/PIZZAS/CABANOSSI.png', desc: 'Cabanossi en rodajas y queso mozzarella.' },
+        { name: 'Full Carnes', image: 'IM/PIZZAS/FULL CARNES.png', desc: 'Selección de carnes de la casa.' },
+        { name: 'Full Embutidos', image: 'IM/PIZZAS/FULL EMBUTIDOS.png', desc: 'Variedad de embutidos tradicionales.' }
+    ],
+
+    state: {
+        step: 1, // 1: Size, 2: Flavor 1, 3: Flavor 2, 4: Preview
+        size: 'Mediana', // 'Mediana' or 'Familiar'
+        price: 43.00,
+        portions: '8 porciones - Ideal para 2-3 personas',
+        flavor1: null,
+        flavor2: null,
+        defaultImg: 'IM/PIZZAS/AMERICANA.png'
+    },
+
+    init() {
+        // sync from card if preselected
+    },
+
+    openFlow() {
+        const sizeBtn = document.querySelector(`button[data-pizza-id="27"].selected-size`);
+        if (sizeBtn) {
+            const name = sizeBtn.getAttribute('data-name');
+            const price = parseFloat(sizeBtn.getAttribute('data-price'));
+            if (name.includes('Familiar')) {
+                this.state.size = 'Familiar';
+                this.state.price = 55.00;
+                this.state.portions = '12 porciones - Ideal para 4-5 personas';
+            } else {
+                this.state.size = 'Mediana';
+                this.state.price = 43.00;
+                this.state.portions = '8 porciones - Ideal para 2-3 personas';
+            }
+            // Move directly to step 2 if size was already picked on card, or step 1
+            this.state.step = 2;
+        } else {
+            this.state.step = 1;
+        }
+
+        const modal = document.getElementById('armatupizza-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            this.render();
+        }
+    },
+
+    handleCardAdd(btn) {
+        const sizeBtn = document.querySelector(`button[data-pizza-id="27"].selected-size`);
+        if (!sizeBtn) {
+            alert('Seleccione un tamaño (Mediana o Familiar) antes de continuar');
+            return;
+        }
+        this.openFlow();
+    },
+
+    closeModal() {
+        const modal = document.getElementById('armatupizza-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    },
+
+    selectSize(size, price, portions) {
+        this.state.size = size;
+        this.state.price = price;
+        this.state.portions = portions;
+        this.state.step = 2;
+        this.render();
+    },
+
+    selectFlavor1(flavorName) {
+        const flavor = this.flavors.find(f => f.name === flavorName);
+        this.state.flavor1 = flavor;
+        // If flavor2 was already the same, clear it
+        if (this.state.flavor2 && this.state.flavor2.name === flavorName) {
+            this.state.flavor2 = null;
+        }
+        this.state.step = 3;
+        this.render();
+    },
+
+    selectFlavor2(flavorName) {
+        const flavor = this.flavors.find(f => f.name === flavorName);
+        this.state.flavor2 = flavor;
+        this.state.step = 4;
+        this.render();
+    },
+
+    goToStep(stepNumber) {
+        if (stepNumber === 2 && !this.state.size) {
+            this.state.step = 1;
+        } else if (stepNumber === 3 && !this.state.flavor1) {
+            this.state.step = 2;
+        } else if (stepNumber === 4 && (!this.state.flavor1 || !this.state.flavor2)) {
+            this.state.step = 3;
+        } else {
+            this.state.step = stepNumber;
+        }
+        this.render();
+    },
+
+    render() {
+        this.updateStepIndicators();
+        const body = document.getElementById('armatupizza-modal-body');
+        const footer = document.getElementById('armatupizza-modal-footer');
+        if (!body || !footer) return;
+
+        if (this.state.step === 1) {
+            this.renderStep1(body, footer);
+        } else if (this.state.step === 2) {
+            this.renderStep2(body, footer);
+        } else if (this.state.step === 3) {
+            this.renderStep3(body, footer);
+        } else if (this.state.step === 4) {
+            this.renderStep4(body, footer);
+        }
+    },
+
+    updateStepIndicators() {
+        for (let i = 1; i <= 4; i++) {
+            const ind = document.getElementById(`armatupizza-step-ind-${i}`);
+            if (!ind) continue;
+            const circle = ind.querySelector('span:first-child');
+            if (i === this.state.step) {
+                ind.className = 'flex items-center gap-2 text-xs font-bold text-white transition-colors cursor-pointer';
+                if (circle) circle.className = 'w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-[11px] flex-shrink-0 shadow-md';
+            } else if (i < this.state.step) {
+                ind.className = 'flex items-center gap-2 text-xs font-semibold text-green-400 transition-colors cursor-pointer';
+                if (circle) circle.className = 'w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-[10px] flex-shrink-0';
+            } else {
+                ind.className = 'flex items-center gap-2 text-xs font-medium text-gray-400 transition-colors opacity-70';
+                if (circle) circle.className = 'w-6 h-6 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center text-[11px] flex-shrink-0';
+            }
+            ind.onclick = () => {
+                if (i <= this.state.step || (i === 2 && this.state.size) || (i === 3 && this.state.flavor1) || (i === 4 && this.state.flavor1 && this.state.flavor2)) {
+                    this.goToStep(i);
+                }
+            };
+        }
+    },
+
+    renderStep1(body, footer) {
+        body.innerHTML = `
+            <div class="space-y-4">
+                <div class="text-center sm:text-left mb-4">
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900">1. Elige el tamaño</h3>
+                    <p class="text-xs sm:text-sm text-gray-500">Selecciona el tamaño para tu pizza combinada</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- MEDIANA -->
+                    <div onclick="armaTuPizzaApp.selectSize('Mediana', 43.00, '8 porciones - Ideal para 2-3 personas')" class="bg-white border-2 ${this.state.size === 'Mediana' ? 'border-primary ring-2 ring-primary/20 shadow-md' : 'border-gray-200 hover:border-gray-300'} rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold uppercase tracking-wider text-primary bg-red-50 px-2.5 py-1 rounded-full">Mediana</span>
+                                <span class="text-lg font-extrabold text-gray-900">S/ 43.00</span>
+                            </div>
+                            <h4 class="text-base font-bold text-gray-800 mb-1">Pizza Mediana</h4>
+                            <p class="text-xs text-gray-500">8 porciones • Ideal para 2-3 personas</p>
+                        </div>
+                        <button class="mt-4 w-full py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors ${this.state.size === 'Mediana' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 group-hover:bg-primary group-hover:text-white'}">
+                            ${this.state.size === 'Mediana' ? '✓ Seleccionado' : 'Seleccionar'}
+                        </button>
+                    </div>
+
+                    <!-- FAMILIAR -->
+                    <div onclick="armaTuPizzaApp.selectSize('Familiar', 55.00, '12 porciones - Ideal para 4-5 personas')" class="bg-white border-2 ${this.state.size === 'Familiar' ? 'border-primary ring-2 ring-primary/20 shadow-md' : 'border-gray-200 hover:border-gray-300'} rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold uppercase tracking-wider text-primary bg-red-50 px-2.5 py-1 rounded-full">Familiar</span>
+                                <span class="text-lg font-extrabold text-gray-900">S/ 55.00</span>
+                            </div>
+                            <h4 class="text-base font-bold text-gray-800 mb-1">Pizza Familiar</h4>
+                            <p class="text-xs text-gray-500">12 porciones • Ideal para 4-5 personas</p>
+                        </div>
+                        <button class="mt-4 w-full py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors ${this.state.size === 'Familiar' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 group-hover:bg-primary group-hover:text-white'}">
+                            ${this.state.size === 'Familiar' ? '✓ Seleccionado' : 'Seleccionar'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        footer.innerHTML = `
+            <button onclick="armaTuPizzaApp.closeModal()" class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition">
+                Cancelar
+            </button>
+            <button onclick="armaTuPizzaApp.goToStep(2)" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-red-700 text-white font-bold text-xs uppercase tracking-wider hover:shadow-lg transition">
+                Siguiente (Sabor 1) <i class="fas fa-arrow-right ml-1"></i>
+            </button>
+        `;
+    },
+
+    renderStep2(body, footer) {
+        body.innerHTML = `
+            <div class="space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-2">
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-900">2. Elige el primer sabor</h3>
+                        <p class="text-xs sm:text-sm text-gray-500">Tamaño: <span class="font-bold text-gray-800">${this.state.size}</span> (S/ ${this.state.price.toFixed(2)})</p>
+                    </div>
+                    <span class="text-xs bg-red-50 text-primary font-bold px-3 py-1 rounded-full self-start sm:self-auto">Mitad 1 de 2</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    ${this.flavors.map(flavor => {
+                        const isSelected = this.state.flavor1 && this.state.flavor1.name === flavor.name;
+                        return `
+                            <div onclick="armaTuPizzaApp.selectFlavor1('${flavor.name}')" class="bg-white border-2 ${isSelected ? 'border-primary ring-2 ring-primary/20 shadow-sm' : 'border-gray-200 hover:border-gray-300'} rounded-xl overflow-hidden cursor-pointer transition-all flex flex-col group">
+                                <div class="h-28 w-full bg-gray-100 overflow-hidden relative">
+                                    <img src="${flavor.image}" alt="${flavor.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                                    ${isSelected ? '<span class="absolute top-2 right-2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">Elegido</span>' : ''}
+                                </div>
+                                <div class="p-3 flex flex-col flex-grow">
+                                    <h4 class="font-bold text-gray-900 text-sm mb-1 line-clamp-1">${flavor.name}</h4>
+                                    <p class="text-gray-500 text-[11px] line-clamp-2 mb-3 leading-tight flex-grow">${flavor.desc || 'Receta artesanal de la casa.'}</p>
+                                    <button class="w-full py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors ${isSelected ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 group-hover:bg-primary group-hover:text-white'}">
+                                        ${isSelected ? '✓ Seleccionado' : 'Elegir'}
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+
+        footer.innerHTML = `
+            <button onclick="armaTuPizzaApp.goToStep(1)" class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition flex items-center gap-1.5">
+                <i class="fas fa-arrow-left"></i> Volver a Tamaño
+            </button>
+            <button ${this.state.flavor1 ? 'onclick="armaTuPizzaApp.goToStep(3)"' : 'disabled'} class="px-6 py-2.5 rounded-xl ${this.state.flavor1 ? 'bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'} font-bold text-xs uppercase tracking-wider transition">
+                Siguiente (Sabor 2) <i class="fas fa-arrow-right ml-1"></i>
+            </button>
+        `;
+    },
+
+    renderStep3(body, footer) {
+        // Exclude flavor1 from the available list for flavor2
+        const availableFlavors = this.flavors.filter(f => !this.state.flavor1 || f.name !== this.state.flavor1.name);
+
+        body.innerHTML = `
+            <div class="space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-2">
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-900">3. Elige el segundo sabor</h3>
+                        <p class="text-xs sm:text-sm text-gray-500">Primer sabor: <span class="font-bold text-gray-800">${this.state.flavor1 ? this.state.flavor1.name : 'No seleccionado'}</span></p>
+                    </div>
+                    <span class="text-xs bg-red-50 text-primary font-bold px-3 py-1 rounded-full self-start sm:self-auto">Mitad 2 de 2</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    ${availableFlavors.map(flavor => {
+                        const isSelected = this.state.flavor2 && this.state.flavor2.name === flavor.name;
+                        return `
+                            <div onclick="armaTuPizzaApp.selectFlavor2('${flavor.name}')" class="bg-white border-2 ${isSelected ? 'border-primary ring-2 ring-primary/20 shadow-sm' : 'border-gray-200 hover:border-gray-300'} rounded-xl overflow-hidden cursor-pointer transition-all flex flex-col group">
+                                <div class="h-28 w-full bg-gray-100 overflow-hidden relative">
+                                    <img src="${flavor.image}" alt="${flavor.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                                    ${isSelected ? '<span class="absolute top-2 right-2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">Elegido</span>' : ''}
+                                </div>
+                                <div class="p-3 flex flex-col flex-grow">
+                                    <h4 class="font-bold text-gray-900 text-sm mb-1 line-clamp-1">${flavor.name}</h4>
+                                    <p class="text-gray-500 text-[11px] line-clamp-2 mb-3 leading-tight flex-grow">${flavor.desc || 'Receta artesanal de la casa.'}</p>
+                                    <button class="w-full py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors ${isSelected ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 group-hover:bg-primary group-hover:text-white'}">
+                                        ${isSelected ? '✓ Seleccionado' : 'Elegir'}
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+
+        footer.innerHTML = `
+            <button onclick="armaTuPizzaApp.goToStep(2)" class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition flex items-center gap-1.5">
+                <i class="fas fa-arrow-left"></i> Volver a Sabor 1
+            </button>
+            <button ${this.state.flavor2 ? 'onclick="armaTuPizzaApp.goToStep(4)"' : 'disabled'} class="px-6 py-2.5 rounded-xl ${this.state.flavor2 ? 'bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'} font-bold text-xs uppercase tracking-wider transition">
+                Ver Resumen <i class="fas fa-arrow-right ml-1"></i>
+            </button>
+        `;
+    },
+
+    renderStep4(body, footer) {
+        const f1 = this.state.flavor1;
+        const f2 = this.state.flavor2;
+        const completePizzaImg = (f1 && f1.image) ? f1.image : this.state.defaultImg;
+
+        body.innerHTML = `
+            <div class="space-y-6">
+                <div class="text-center">
+                    <span class="text-xs bg-green-100 text-green-700 font-bold px-3 py-1 rounded-full uppercase tracking-wider">¡Listo para ordenar!</span>
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mt-2">Vista Previa de tu Pizza</h3>
+                    <p class="text-xs sm:text-sm text-gray-500">Revisa la combinación de sabores antes de agregar al carrito</p>
+                </div>
+
+                <!-- Complete Pizza Image (sin división visual según instrucciones del usuario) -->
+                <div class="flex justify-center">
+                    <div class="w-56 h-56 sm:w-64 sm:h-64 rounded-full overflow-hidden border-4 border-white shadow-xl relative bg-gray-100 flex items-center justify-center">
+                        <img src="${completePizzaImg}" alt="Pizza Completa" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80';">
+                    </div>
+                </div>
+
+                <!-- Dos sabores elegidos (con fotos pequeñas separadas por un +) -->
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-3 text-center sm:text-left">Combinación de 2 Sabores</p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <!-- Sabor 1 -->
+                        <div class="flex items-center gap-3 w-full sm:w-5/12 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <div class="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-white border border-gray-200 flex items-center justify-center">
+                                <img src="${f1 ? f1.image : ''}" alt="${f1 ? f1.name : ''}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80';">
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <span class="text-[10px] uppercase font-bold text-primary block">Mitad 1</span>
+                                <h4 class="font-bold text-gray-900 text-sm leading-tight truncate">${f1 ? f1.name : ''}</h4>
+                                <p class="text-[11px] text-gray-500 truncate leading-tight">${f1 ? f1.desc : ''}</p>
+                            </div>
+                        </div>
+
+                        <!-- Plus Sign -->
+                        <div class="w-8 h-8 rounded-full bg-red-100 text-primary flex items-center justify-center font-bold text-base flex-shrink-0 shadow-sm">
+                            +
+                        </div>
+
+                        <!-- Sabor 2 -->
+                        <div class="flex items-center gap-3 w-full sm:w-5/12 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <div class="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-white border border-gray-200 flex items-center justify-center">
+                                <img src="${f2 ? f2.image : ''}" alt="${f2 ? f2.name : ''}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80';">
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <span class="text-[10px] uppercase font-bold text-primary block">Mitad 2</span>
+                                <h4 class="font-bold text-gray-900 text-sm leading-tight truncate">${f2 ? f2.name : ''}</h4>
+                                <p class="text-[11px] text-gray-500 truncate leading-tight">${f2 ? f2.desc : ''}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalle de tamaño, porciones y precio -->
+                <div class="bg-gray-100 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 border border-gray-200">
+                    <div>
+                        <div class="text-xs uppercase tracking-wider font-bold text-gray-500">Detalles del tamaño</div>
+                        <div class="text-base font-extrabold text-gray-900">Pizza ${this.state.size} • <span class="text-xs sm:text-sm font-semibold text-gray-600">${this.state.portions}</span></div>
+                    </div>
+                    <div class="text-center sm:text-right">
+                        <span class="text-xs text-gray-500 uppercase tracking-wider font-bold block">Precio Total</span>
+                        <span class="text-2xl font-black text-primary">S/ ${this.state.price.toFixed(2)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        footer.innerHTML = `
+            <button onclick="armaTuPizzaApp.goToStep(3)" class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition flex items-center gap-1.5">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+            <button onclick="armaTuPizzaApp.addToCart(this)" class="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-red-700 text-white font-bold text-sm tracking-wide hover:shadow-[0_8px_20px_rgba(230,33,23,0.4)] hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                <i class="fas fa-shopping-cart text-xs"></i>
+                Agregar al carrito • S/ ${this.state.price.toFixed(2)}
+            </button>
+        `;
+    },
+
+    addToCart(btn = null) {
+        if (!this.state.flavor1 || !this.state.flavor2) {
+            alert('Debes seleccionar dos sabores diferentes para continuar');
+            return;
+        }
+
+        const name = `Arma Tu Pizza (${this.state.size})`;
+        const desc = `Mitad ${this.state.flavor1.name} + Mitad ${this.state.flavor2.name}`;
+        const price = this.state.price;
+        const img = this.state.flavor1.image || this.state.defaultImg;
+
+        const targetBtn = btn || document.getElementById('add-btn-27');
+        cartApp.addItem(name, price, img, desc, targetBtn);
+        this.closeModal();
+
+        // Also update the card's visual selection to reflect the added size
+        const sizeBtns = document.querySelectorAll('button[data-pizza-id="27"]');
+        sizeBtns.forEach(b => {
+            const btnName = b.getAttribute('data-name');
+            if (btnName && btnName.includes(this.state.size)) {
+                b.className = "size-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all duration-300 relative border-2 border-transparent w-full bg-gradient-to-br from-primary to-red-700 shadow-[0_4px_12px_rgba(230,33,23,0.3)] text-white scale-[1.02] selected-size";
+            } else {
+                b.className = "size-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all duration-300 relative border-2 border-transparent w-full bg-gray-50 text-gray-500 hover:bg-gray-100";
+            }
+        });
+    }
+};
+
 // --- Pizza A Mi Gusto App Logic ---
 const pizzaAmigustoApp = {
     state: {
@@ -911,6 +1335,7 @@ const calzoneApp = {
 
 // Initialize apps when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    armaTuPizzaApp.init();
     pizzaAmigustoApp.init();
     calzoneAmigustoApp.init();
     cartApp.init();
@@ -1141,6 +1566,8 @@ function selectPizzaSize(btn, pizzaIdx) {
                 vegApp.updateLimit(isPersonal ? 4 : 6, btn);
                 addBtn.setAttribute("onclick", `vegApp.addToCart('${pizzaIdx}', this)`);
             }
+        } else if (pizzaIdx === '27') {
+            addBtn.setAttribute("onclick", `armaTuPizzaApp.handleCardAdd(this)`);
         } else {
             addBtn.setAttribute("onclick", `addPizzaToCart('${pizzaIdx}', this)`);
         }

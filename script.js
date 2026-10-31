@@ -167,38 +167,228 @@ const armaTuPizzaApp = {
 
     selectFlavor1(flavorName) {
         const flavor = this.flavors.find(f => f.name === flavorName);
+        if (!flavor) return;
+        const isDifferent = !this.state.flavor1 || this.state.flavor1.name !== flavor.name;
         this.state.flavor1 = flavor;
-        if (!this.hasOlives(flavor)) {
-            this.state.olive1 = null;
-        } else if (!this.state.olive1) {
+        if (isDifferent) {
             this.state.olive1 = null;
         }
         if (this.state.flavor2 && this.state.flavor2.name === flavorName) {
             this.state.flavor2 = null;
             this.state.olive2 = null;
         }
-        this.render();
+        if (this.state.step === 2 && document.getElementById('armatupizza-flavor-grid')) {
+            this.updateStep2SelectionUI();
+        } else {
+            this.render();
+        }
     },
 
-    setOlive1(oliveType) {
+    setOlive1(oliveType, flavorName = null) {
+        if (flavorName) {
+            const flavor = this.flavors.find(f => f.name === flavorName);
+            if (flavor) {
+                if (!this.state.flavor1 || this.state.flavor1.name !== flavor.name) {
+                    this.state.flavor1 = flavor;
+                }
+                if (this.state.flavor2 && this.state.flavor2.name === flavor.name) {
+                    this.state.flavor2 = null;
+                    this.state.olive2 = null;
+                }
+            }
+        }
         this.state.olive1 = oliveType;
-        this.render();
+        if (this.state.step === 2 && document.getElementById('armatupizza-flavor-grid')) {
+            this.updateStep2SelectionUI();
+        } else {
+            this.render();
+        }
     },
 
     selectFlavor2(flavorName) {
         const flavor = this.flavors.find(f => f.name === flavorName);
+        if (!flavor) return;
+        const isDifferent = !this.state.flavor2 || this.state.flavor2.name !== flavor.name;
         this.state.flavor2 = flavor;
-        if (!this.hasOlives(flavor)) {
-            this.state.olive2 = null;
-        } else if (!this.state.olive2) {
+        if (isDifferent) {
             this.state.olive2 = null;
         }
-        this.render();
+        if (this.state.step === 3 && document.getElementById('armatupizza-flavor-grid')) {
+            this.updateStep3SelectionUI();
+        } else {
+            this.render();
+        }
     },
 
-    setOlive2(oliveType) {
+    setOlive2(oliveType, flavorName = null) {
+        if (flavorName) {
+            const flavor = this.flavors.find(f => f.name === flavorName);
+            if (flavor) {
+                if (!this.state.flavor2 || this.state.flavor2.name !== flavor.name) {
+                    this.state.flavor2 = flavor;
+                }
+            }
+        }
         this.state.olive2 = oliveType;
-        this.render();
+        if (this.state.step === 3 && document.getElementById('armatupizza-flavor-grid')) {
+            this.updateStep3SelectionUI();
+        } else {
+            this.render();
+        }
+    },
+
+    updateStep2SelectionUI() {
+        const grid = document.getElementById('armatupizza-flavor-grid');
+        if (!grid) {
+            this.render();
+            return;
+        }
+
+        const cards = grid.querySelectorAll('.pizza-flavor-card');
+        cards.forEach(card => {
+            const name = card.getAttribute('data-flavor-name');
+            const isSelected = !!(this.state.flavor1 && this.state.flavor1.name === name);
+            const flavor = this.flavors.find(f => f.name === name);
+            const hasOlive = this.hasOlives(flavor);
+            const selectedOlive = isSelected ? this.state.olive1 : null;
+
+            if (isSelected) {
+                card.className = 'pizza-flavor-card bg-white border-2 border-primary ring-2 ring-primary/20 shadow-md rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between group';
+            } else {
+                card.className = 'pizza-flavor-card bg-white border-2 border-gray-200 hover:border-gray-300 rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between group';
+            }
+
+            const badge = card.querySelector('[data-role="chosen-badge"]');
+            if (badge) {
+                if (isSelected) badge.classList.remove('hidden');
+                else badge.classList.add('hidden');
+            }
+
+            if (hasOlive) {
+                const reqLabel = card.querySelector('[data-role="olive-req"]');
+                if (reqLabel) {
+                    if (isSelected && !selectedOlive) {
+                        reqLabel.className = 'text-[9px] font-bold uppercase tracking-wider text-red-500 font-extrabold';
+                    } else {
+                        reqLabel.className = 'text-[9px] font-bold uppercase tracking-wider text-gray-400';
+                    }
+                }
+
+                const errorText = card.querySelector('[data-role="olive-error"]');
+                if (errorText) {
+                    if (isSelected && !selectedOlive) {
+                        errorText.classList.remove('hidden');
+                    } else {
+                        errorText.classList.add('hidden');
+                    }
+                }
+
+                const oliveButtons = card.querySelectorAll('[data-olive-type]');
+                oliveButtons.forEach(btn => {
+                    const type = btn.getAttribute('data-olive-type');
+                    const isOliveActive = (selectedOlive === type);
+                    if (isOliveActive) {
+                        btn.className = 'py-1 px-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold border transition-colors bg-primary text-white border-primary shadow-sm';
+                    } else {
+                        btn.className = 'py-1 px-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold border transition-colors bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100';
+                    }
+                });
+            }
+        });
+
+        const canContinue = this.state.flavor1 && (!this.hasOlives(this.state.flavor1) || !!this.state.olive1);
+        const footer = document.getElementById('armatupizza-modal-footer');
+        if (footer) {
+            const nextBtn = footer.querySelector('[data-role="next-step-btn"]');
+            if (nextBtn) {
+                if (canContinue) {
+                    nextBtn.disabled = false;
+                    nextBtn.setAttribute('onclick', 'armaTuPizzaApp.goToStep(3)');
+                    nextBtn.className = 'px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg font-bold text-xs uppercase tracking-wider transition';
+                } else {
+                    nextBtn.disabled = true;
+                    nextBtn.removeAttribute('onclick');
+                    nextBtn.className = 'px-6 py-2.5 rounded-xl bg-gray-200 text-gray-400 cursor-not-allowed font-bold text-xs uppercase tracking-wider transition';
+                }
+            }
+        }
+    },
+
+    updateStep3SelectionUI() {
+        const grid = document.getElementById('armatupizza-flavor-grid');
+        if (!grid) {
+            this.render();
+            return;
+        }
+
+        const cards = grid.querySelectorAll('.pizza-flavor-card');
+        cards.forEach(card => {
+            const name = card.getAttribute('data-flavor-name');
+            const isSelected = !!(this.state.flavor2 && this.state.flavor2.name === name);
+            const flavor = this.flavors.find(f => f.name === name);
+            const hasOlive = this.hasOlives(flavor);
+            const selectedOlive = isSelected ? this.state.olive2 : null;
+
+            if (isSelected) {
+                card.className = 'pizza-flavor-card bg-white border-2 border-primary ring-2 ring-primary/20 shadow-md rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between group';
+            } else {
+                card.className = 'pizza-flavor-card bg-white border-2 border-gray-200 hover:border-gray-300 rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between group';
+            }
+
+            const badge = card.querySelector('[data-role="chosen-badge"]');
+            if (badge) {
+                if (isSelected) badge.classList.remove('hidden');
+                else badge.classList.add('hidden');
+            }
+
+            if (hasOlive) {
+                const reqLabel = card.querySelector('[data-role="olive-req"]');
+                if (reqLabel) {
+                    if (isSelected && !selectedOlive) {
+                        reqLabel.className = 'text-[9px] font-bold uppercase tracking-wider text-red-500 font-extrabold';
+                    } else {
+                        reqLabel.className = 'text-[9px] font-bold uppercase tracking-wider text-gray-400';
+                    }
+                }
+
+                const errorText = card.querySelector('[data-role="olive-error"]');
+                if (errorText) {
+                    if (isSelected && !selectedOlive) {
+                        errorText.classList.remove('hidden');
+                    } else {
+                        errorText.classList.add('hidden');
+                    }
+                }
+
+                const oliveButtons = card.querySelectorAll('[data-olive-type]');
+                oliveButtons.forEach(btn => {
+                    const type = btn.getAttribute('data-olive-type');
+                    const isOliveActive = (selectedOlive === type);
+                    if (isOliveActive) {
+                        btn.className = 'py-1 px-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold border transition-colors bg-primary text-white border-primary shadow-sm';
+                    } else {
+                        btn.className = 'py-1 px-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold border transition-colors bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100';
+                    }
+                });
+            }
+        });
+
+        const canContinue = this.state.flavor2 && (!this.hasOlives(this.state.flavor2) || !!this.state.olive2);
+        const footer = document.getElementById('armatupizza-modal-footer');
+        if (footer) {
+            const nextBtn = footer.querySelector('[data-role="next-step-btn"]');
+            if (nextBtn) {
+                if (canContinue) {
+                    nextBtn.disabled = false;
+                    nextBtn.setAttribute('onclick', 'armaTuPizzaApp.goToStep(4)');
+                    nextBtn.className = 'px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg font-bold text-xs uppercase tracking-wider transition';
+                } else {
+                    nextBtn.disabled = true;
+                    nextBtn.removeAttribute('onclick');
+                    nextBtn.className = 'px-6 py-2.5 rounded-xl bg-gray-200 text-gray-400 cursor-not-allowed font-bold text-xs uppercase tracking-wider transition';
+                }
+            }
+        }
     },
 
     goToStep(stepNumber) {
@@ -241,6 +431,12 @@ const armaTuPizzaApp = {
         const footer = document.getElementById('armatupizza-modal-footer');
         if (!body || !footer) return;
 
+        const grid = document.getElementById('armatupizza-flavor-grid');
+        const prevStep = this.state.currentRenderedStep;
+        const isSameStep = (prevStep === this.state.step);
+        const bodyScroll = (isSameStep && body) ? body.scrollTop : 0;
+        const gridScroll = (isSameStep && grid) ? grid.scrollTop : 0;
+
         if (this.state.step === 1) {
             this.renderStep1(body, footer);
         } else if (this.state.step === 2) {
@@ -249,6 +445,20 @@ const armaTuPizzaApp = {
             this.renderStep3(body, footer);
         } else if (this.state.step === 4) {
             this.renderStep4(body, footer);
+        }
+
+        this.state.currentRenderedStep = this.state.step;
+
+        if (isSameStep) {
+            if (body && bodyScroll > 0) body.scrollTop = bodyScroll;
+            const newGrid = document.getElementById('armatupizza-flavor-grid');
+            if (newGrid && gridScroll > 0) newGrid.scrollTop = gridScroll;
+
+            requestAnimationFrame(() => {
+                if (body && bodyScroll > 0) body.scrollTop = bodyScroll;
+                const g = document.getElementById('armatupizza-flavor-grid');
+                if (g && gridScroll > 0) g.scrollTop = gridScroll;
+            });
         }
     },
 
@@ -349,21 +559,23 @@ const armaTuPizzaApp = {
                 <div class="relative">
                     <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
                     <input type="text"
+                        id="armatupizza-search-1"
                         placeholder="Buscar sabor de pizza..."
                         value="${this.state.searchTerm1 || ''}"
                         oninput="armaTuPizzaApp.state.searchTerm1 = this.value; armaTuPizzaApp.render();"
                         class="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1">
+                <div id="armatupizza-flavor-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1">
                     ${filteredFlavors.map(flavor => {
                         const isSelected = this.state.flavor1 && this.state.flavor1.name === flavor.name;
                         const hasOlive = this.hasOlives(flavor);
                         const selectedOlive = isSelected ? this.state.olive1 : null;
 
                         return `
-                            <div onclick="armaTuPizzaApp.selectFlavor1('${flavor.name}')"
-                                class="bg-white border-2 ${isSelected ? 'border-primary ring-2 ring-primary/20 shadow-md' : 'border-gray-200 hover:border-gray-300'} rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between group">
+                            <div data-flavor-name="${flavor.name}"
+                                onclick="armaTuPizzaApp.selectFlavor1('${flavor.name}')"
+                                class="pizza-flavor-card bg-white border-2 ${isSelected ? 'border-primary ring-2 ring-primary/20 shadow-md' : 'border-gray-200 hover:border-gray-300'} rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between group">
 
                                 <div class="flex gap-3 items-start">
                                     <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 relative">
@@ -372,7 +584,7 @@ const armaTuPizzaApp = {
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between gap-1">
                                             <h4 class="font-bold text-gray-900 text-sm leading-tight truncate">${flavor.name}</h4>
-                                            ${isSelected ? '<span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">✓ Elegido</span>' : ''}
+                                            <span data-role="chosen-badge" class="${isSelected ? '' : 'hidden'} bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">✓ Elegido</span>
                                         </div>
                                         <p class="text-gray-500 text-[11px] line-clamp-2 mt-1 leading-snug">${flavor.desc || 'Receta artesanal de la casa.'}</p>
                                     </div>
@@ -383,23 +595,22 @@ const armaTuPizzaApp = {
                                     <div class="mt-3 pt-2.5 border-t border-gray-100" onclick="event.stopPropagation()">
                                         <div class="flex items-center justify-between mb-1.5">
                                             <span class="text-[10px] font-bold uppercase tracking-wider text-gray-600">Tipo de aceituna:</span>
-                                            <span class="text-[9px] font-bold uppercase tracking-wider ${isSelected && !selectedOlive ? 'text-red-500 font-extrabold' : 'text-gray-400'}">Obligatorio</span>
+                                            <span data-role="olive-req" class="text-[9px] font-bold uppercase tracking-wider ${isSelected && !selectedOlive ? 'text-red-500 font-extrabold' : 'text-gray-400'}">Obligatorio</span>
                                         </div>
                                         <div class="grid grid-cols-3 gap-1.5">
                                             ${['Negras', 'Verdes', 'Mixtas'].map(oliveType => {
                                                 const isOliveActive = selectedOlive === oliveType;
                                                 return `
                                                     <button type="button"
-                                                        onclick="armaTuPizzaApp.selectFlavor1('${flavor.name}'); armaTuPizzaApp.setOlive1('${oliveType}')"
+                                                        data-olive-type="${oliveType}"
+                                                        onclick="event.stopPropagation(); armaTuPizzaApp.setOlive1('${oliveType}', '${flavor.name}')"
                                                         class="py-1 px-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold border transition-colors ${isOliveActive ? 'bg-primary text-white border-primary shadow-sm' : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'}">
                                                         ${oliveType}
                                                     </button>
                                                 `;
                                             }).join('')}
                                         </div>
-                                        ${isSelected && !selectedOlive ? `
-                                            <p class="text-red-500 text-[10px] font-bold mt-1 text-center">Selecciona un tipo de aceituna</p>
-                                        ` : ''}
+                                        <p data-role="olive-error" class="${isSelected && !selectedOlive ? '' : 'hidden'} text-red-500 text-[10px] font-bold mt-1 text-center">Selecciona un tipo de aceituna</p>
                                     </div>
                                 ` : ''}
                             </div>
@@ -413,7 +624,7 @@ const armaTuPizzaApp = {
             <button onclick="armaTuPizzaApp.goToStep(1)" class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition flex items-center gap-1.5">
                 <i class="fas fa-arrow-left"></i> Volver a Tamaño
             </button>
-            <button ${canContinue ? 'onclick="armaTuPizzaApp.goToStep(3)"' : 'disabled'} class="px-6 py-2.5 rounded-xl ${canContinue ? 'bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'} font-bold text-xs uppercase tracking-wider transition">
+            <button data-role="next-step-btn" ${canContinue ? 'onclick="armaTuPizzaApp.goToStep(3)"' : 'disabled'} class="px-6 py-2.5 rounded-xl ${canContinue ? 'bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'} font-bold text-xs uppercase tracking-wider transition">
                 Siguiente (Sabor 2) <i class="fas fa-arrow-right ml-1"></i>
             </button>
         `;
@@ -442,21 +653,23 @@ const armaTuPizzaApp = {
                 <div class="relative">
                     <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
                     <input type="text"
+                        id="armatupizza-search-2"
                         placeholder="Buscar sabor de pizza..."
                         value="${this.state.searchTerm2 || ''}"
                         oninput="armaTuPizzaApp.state.searchTerm2 = this.value; armaTuPizzaApp.render();"
                         class="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1">
+                <div id="armatupizza-flavor-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1">
                     ${availableFlavors.map(flavor => {
                         const isSelected = this.state.flavor2 && this.state.flavor2.name === flavor.name;
                         const hasOlive = this.hasOlives(flavor);
                         const selectedOlive = isSelected ? this.state.olive2 : null;
 
                         return `
-                            <div onclick="armaTuPizzaApp.selectFlavor2('${flavor.name}')"
-                                class="bg-white border-2 ${isSelected ? 'border-primary ring-2 ring-primary/20 shadow-md' : 'border-gray-200 hover:border-gray-300'} rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between group">
+                            <div data-flavor-name="${flavor.name}"
+                                onclick="armaTuPizzaApp.selectFlavor2('${flavor.name}')"
+                                class="pizza-flavor-card bg-white border-2 ${isSelected ? 'border-primary ring-2 ring-primary/20 shadow-md' : 'border-gray-200 hover:border-gray-300'} rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between group">
 
                                 <div class="flex gap-3 items-start">
                                     <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 relative">
@@ -465,7 +678,7 @@ const armaTuPizzaApp = {
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between gap-1">
                                             <h4 class="font-bold text-gray-900 text-sm leading-tight truncate">${flavor.name}</h4>
-                                            ${isSelected ? '<span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">✓ Elegido</span>' : ''}
+                                            <span data-role="chosen-badge" class="${isSelected ? '' : 'hidden'} bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">✓ Elegido</span>
                                         </div>
                                         <p class="text-gray-500 text-[11px] line-clamp-2 mt-1 leading-snug">${flavor.desc || 'Receta artesanal de la casa.'}</p>
                                     </div>
@@ -476,23 +689,22 @@ const armaTuPizzaApp = {
                                     <div class="mt-3 pt-2.5 border-t border-gray-100" onclick="event.stopPropagation()">
                                         <div class="flex items-center justify-between mb-1.5">
                                             <span class="text-[10px] font-bold uppercase tracking-wider text-gray-600">Tipo de aceituna:</span>
-                                            <span class="text-[9px] font-bold uppercase tracking-wider ${isSelected && !selectedOlive ? 'text-red-500 font-extrabold' : 'text-gray-400'}">Obligatorio</span>
+                                            <span data-role="olive-req" class="text-[9px] font-bold uppercase tracking-wider ${isSelected && !selectedOlive ? 'text-red-500 font-extrabold' : 'text-gray-400'}">Obligatorio</span>
                                         </div>
                                         <div class="grid grid-cols-3 gap-1.5">
                                             ${['Negras', 'Verdes', 'Mixtas'].map(oliveType => {
                                                 const isOliveActive = selectedOlive === oliveType;
                                                 return `
                                                     <button type="button"
-                                                        onclick="armaTuPizzaApp.selectFlavor2('${flavor.name}'); armaTuPizzaApp.setOlive2('${oliveType}')"
+                                                        data-olive-type="${oliveType}"
+                                                        onclick="event.stopPropagation(); armaTuPizzaApp.setOlive2('${oliveType}', '${flavor.name}')"
                                                         class="py-1 px-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold border transition-colors ${isOliveActive ? 'bg-primary text-white border-primary shadow-sm' : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'}">
                                                         ${oliveType}
                                                     </button>
                                                 `;
                                             }).join('')}
                                         </div>
-                                        ${isSelected && !selectedOlive ? `
-                                            <p class="text-red-500 text-[10px] font-bold mt-1 text-center">Selecciona un tipo de aceituna</p>
-                                        ` : ''}
+                                        <p data-role="olive-error" class="${isSelected && !selectedOlive ? '' : 'hidden'} text-red-500 text-[10px] font-bold mt-1 text-center">Selecciona un tipo de aceituna</p>
                                     </div>
                                 ` : ''}
                             </div>
@@ -506,7 +718,7 @@ const armaTuPizzaApp = {
             <button onclick="armaTuPizzaApp.goToStep(2)" class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition flex items-center gap-1.5">
                 <i class="fas fa-arrow-left"></i> Volver a Sabor 1
             </button>
-            <button ${canContinue ? 'onclick="armaTuPizzaApp.goToStep(4)"' : 'disabled'} class="px-6 py-2.5 rounded-xl ${canContinue ? 'bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'} font-bold text-xs uppercase tracking-wider transition">
+            <button data-role="next-step-btn" ${canContinue ? 'onclick="armaTuPizzaApp.goToStep(4)"' : 'disabled'} class="px-6 py-2.5 rounded-xl ${canContinue ? 'bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'} font-bold text-xs uppercase tracking-wider transition">
                 Ver Resumen <i class="fas fa-arrow-right ml-1"></i>
             </button>
         `;

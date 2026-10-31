@@ -66,7 +66,6 @@ const armaTuPizzaApp = {
         { name: 'América con Cebolla', image: 'IM/PIZZAS/AMERICANA CON CEBOLLA.png', desc: 'Jamón, queso y cebolla.' },
         { name: 'Aceituna', image: 'IM/PIZZAS/ACEITUNA.png', desc: 'Queso mozzarella y aceitunas.' },
         { name: 'Aceituna con Cebolla', image: 'IM/PIZZAS/AACEITUNA CON CEBOLLA.png', desc: 'Queso mozzarella, aceitunas y cebolla.' },
-        { name: 'A Mi Gusto', image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80', desc: 'Ingredientes al gusto del cliente.' },
         { name: 'Arabe', image: 'IM/PIZZAS/ARABE.png', desc: 'Cebolla, aceituna, tocino y pollo.' },
         { name: 'Tocino', image: 'IM/PIZZAS/TOCINO SIN CEBOLLA.png', desc: 'Queso mozzarella y tocino crujiente.' },
         { name: 'Tocino con Cebolla', image: 'IM/PIZZAS/TOCINO CON CEBOLLA.png', desc: 'Tocino crocante, queso mozzarella y cebolla.' },
@@ -97,8 +96,18 @@ const armaTuPizzaApp = {
         price: 43.00,
         portions: '8 porciones - Ideal para 2-3 personas',
         flavor1: null,
+        olive1: null, // 'Negras', 'Verdes', 'Mixtas'
         flavor2: null,
+        olive2: null, // 'Negras', 'Verdes', 'Mixtas'
+        searchTerm1: '',
+        searchTerm2: '',
         defaultImg: 'IM/PIZZAS/AMERICANA.png'
+    },
+
+    hasOlives(flavor) {
+        if (!flavor) return false;
+        const text = `${flavor.name} ${flavor.desc || ''}`.toLowerCase();
+        return text.includes('aceitun');
     },
 
     init() {
@@ -109,7 +118,6 @@ const armaTuPizzaApp = {
         const sizeBtn = document.querySelector(`button[data-pizza-id="27"].selected-size`);
         if (sizeBtn) {
             const name = sizeBtn.getAttribute('data-name');
-            const price = parseFloat(sizeBtn.getAttribute('data-price'));
             if (name.includes('Familiar')) {
                 this.state.size = 'Familiar';
                 this.state.price = 55.00;
@@ -119,7 +127,6 @@ const armaTuPizzaApp = {
                 this.state.price = 43.00;
                 this.state.portions = '8 porciones - Ideal para 2-3 personas';
             }
-            // Move directly to step 2 if size was already picked on card, or step 1
             this.state.step = 2;
         } else {
             this.state.step = 1;
@@ -161,28 +168,67 @@ const armaTuPizzaApp = {
     selectFlavor1(flavorName) {
         const flavor = this.flavors.find(f => f.name === flavorName);
         this.state.flavor1 = flavor;
-        // If flavor2 was already the same, clear it
+        if (!this.hasOlives(flavor)) {
+            this.state.olive1 = null;
+        } else if (!this.state.olive1) {
+            this.state.olive1 = null;
+        }
         if (this.state.flavor2 && this.state.flavor2.name === flavorName) {
             this.state.flavor2 = null;
+            this.state.olive2 = null;
         }
-        this.state.step = 3;
+        this.render();
+    },
+
+    setOlive1(oliveType) {
+        this.state.olive1 = oliveType;
         this.render();
     },
 
     selectFlavor2(flavorName) {
         const flavor = this.flavors.find(f => f.name === flavorName);
         this.state.flavor2 = flavor;
-        this.state.step = 4;
+        if (!this.hasOlives(flavor)) {
+            this.state.olive2 = null;
+        } else if (!this.state.olive2) {
+            this.state.olive2 = null;
+        }
+        this.render();
+    },
+
+    setOlive2(oliveType) {
+        this.state.olive2 = oliveType;
         this.render();
     },
 
     goToStep(stepNumber) {
         if (stepNumber === 2 && !this.state.size) {
             this.state.step = 1;
-        } else if (stepNumber === 3 && !this.state.flavor1) {
-            this.state.step = 2;
-        } else if (stepNumber === 4 && (!this.state.flavor1 || !this.state.flavor2)) {
+        } else if (stepNumber === 3) {
+            if (!this.state.flavor1) {
+                alert('Selecciona el primer sabor antes de continuar');
+                return;
+            }
+            if (this.hasOlives(this.state.flavor1) && !this.state.olive1) {
+                alert('Debes elegir el tipo de aceituna para el sabor seleccionado');
+                return;
+            }
             this.state.step = 3;
+        } else if (stepNumber === 4) {
+            if (!this.state.flavor1) {
+                this.state.step = 2;
+                this.render();
+                return;
+            }
+            if (!this.state.flavor2) {
+                alert('Selecciona el segundo sabor antes de continuar');
+                return;
+            }
+            if (this.hasOlives(this.state.flavor2) && !this.state.olive2) {
+                alert('Debes elegir el tipo de aceituna para el segundo sabor seleccionado');
+                return;
+            }
+            this.state.step = 4;
         } else {
             this.state.step = stepNumber;
         }
@@ -282,9 +328,16 @@ const armaTuPizzaApp = {
     },
 
     renderStep2(body, footer) {
+        const query = (this.state.searchTerm1 || '').toLowerCase().trim();
+        const filteredFlavors = this.flavors.filter(f =>
+            f.name.toLowerCase().includes(query) || (f.desc && f.desc.toLowerCase().includes(query))
+        );
+
+        const canContinue = this.state.flavor1 && (!this.hasOlives(this.state.flavor1) || !!this.state.olive1);
+
         body.innerHTML = `
             <div class="space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-2">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div>
                         <h3 class="text-lg sm:text-xl font-bold text-gray-900">2. Elige el primer sabor</h3>
                         <p class="text-xs sm:text-sm text-gray-500">Tamaño: <span class="font-bold text-gray-800">${this.state.size}</span> (S/ ${this.state.price.toFixed(2)})</p>
@@ -292,22 +345,63 @@ const armaTuPizzaApp = {
                     <span class="text-xs bg-red-50 text-primary font-bold px-3 py-1 rounded-full self-start sm:self-auto">Mitad 1 de 2</span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    ${this.flavors.map(flavor => {
+                <!-- Search Input -->
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                    <input type="text"
+                        placeholder="Buscar sabor de pizza..."
+                        value="${this.state.searchTerm1 || ''}"
+                        oninput="armaTuPizzaApp.state.searchTerm1 = this.value; armaTuPizzaApp.render();"
+                        class="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1">
+                    ${filteredFlavors.map(flavor => {
                         const isSelected = this.state.flavor1 && this.state.flavor1.name === flavor.name;
+                        const hasOlive = this.hasOlives(flavor);
+                        const selectedOlive = isSelected ? this.state.olive1 : null;
+
                         return `
-                            <div onclick="armaTuPizzaApp.selectFlavor1('${flavor.name}')" class="bg-white border-2 ${isSelected ? 'border-primary ring-2 ring-primary/20 shadow-sm' : 'border-gray-200 hover:border-gray-300'} rounded-xl overflow-hidden cursor-pointer transition-all flex flex-col group">
-                                <div class="h-28 w-full bg-gray-100 overflow-hidden relative">
-                                    <img src="${flavor.image}" alt="${flavor.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-                                    ${isSelected ? '<span class="absolute top-2 right-2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">Elegido</span>' : ''}
+                            <div onclick="armaTuPizzaApp.selectFlavor1('${flavor.name}')"
+                                class="bg-white border-2 ${isSelected ? 'border-primary ring-2 ring-primary/20 shadow-md' : 'border-gray-200 hover:border-gray-300'} rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between group">
+
+                                <div class="flex gap-3 items-start">
+                                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 relative">
+                                        <img src="${flavor.image}" alt="${flavor.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80';">
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center justify-between gap-1">
+                                            <h4 class="font-bold text-gray-900 text-sm leading-tight truncate">${flavor.name}</h4>
+                                            ${isSelected ? '<span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">✓ Elegido</span>' : ''}
+                                        </div>
+                                        <p class="text-gray-500 text-[11px] line-clamp-2 mt-1 leading-snug">${flavor.desc || 'Receta artesanal de la casa.'}</p>
+                                    </div>
                                 </div>
-                                <div class="p-3 flex flex-col flex-grow">
-                                    <h4 class="font-bold text-gray-900 text-sm mb-1 line-clamp-1">${flavor.name}</h4>
-                                    <p class="text-gray-500 text-[11px] line-clamp-2 mb-3 leading-tight flex-grow">${flavor.desc || 'Receta artesanal de la casa.'}</p>
-                                    <button class="w-full py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors ${isSelected ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 group-hover:bg-primary group-hover:text-white'}">
-                                        ${isSelected ? '✓ Seleccionado' : 'Elegir'}
-                                    </button>
-                                </div>
+
+                                <!-- Olive Selector if pizza has olives -->
+                                ${hasOlive ? `
+                                    <div class="mt-3 pt-2.5 border-t border-gray-100" onclick="event.stopPropagation()">
+                                        <div class="flex items-center justify-between mb-1.5">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-600">Tipo de aceituna:</span>
+                                            <span class="text-[9px] font-bold uppercase tracking-wider ${isSelected && !selectedOlive ? 'text-red-500 font-extrabold' : 'text-gray-400'}">Obligatorio</span>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-1.5">
+                                            ${['Negras', 'Verdes', 'Mixtas'].map(oliveType => {
+                                                const isOliveActive = selectedOlive === oliveType;
+                                                return `
+                                                    <button type="button"
+                                                        onclick="armaTuPizzaApp.selectFlavor1('${flavor.name}'); armaTuPizzaApp.setOlive1('${oliveType}')"
+                                                        class="py-1 px-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold border transition-colors ${isOliveActive ? 'bg-primary text-white border-primary shadow-sm' : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'}">
+                                                        ${oliveType}
+                                                    </button>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                        ${isSelected && !selectedOlive ? `
+                                            <p class="text-red-500 text-[10px] font-bold mt-1 text-center">Selecciona un tipo de aceituna</p>
+                                        ` : ''}
+                                    </div>
+                                ` : ''}
                             </div>
                         `;
                     }).join('')}
@@ -319,42 +413,88 @@ const armaTuPizzaApp = {
             <button onclick="armaTuPizzaApp.goToStep(1)" class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition flex items-center gap-1.5">
                 <i class="fas fa-arrow-left"></i> Volver a Tamaño
             </button>
-            <button ${this.state.flavor1 ? 'onclick="armaTuPizzaApp.goToStep(3)"' : 'disabled'} class="px-6 py-2.5 rounded-xl ${this.state.flavor1 ? 'bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'} font-bold text-xs uppercase tracking-wider transition">
+            <button ${canContinue ? 'onclick="armaTuPizzaApp.goToStep(3)"' : 'disabled'} class="px-6 py-2.5 rounded-xl ${canContinue ? 'bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'} font-bold text-xs uppercase tracking-wider transition">
                 Siguiente (Sabor 2) <i class="fas fa-arrow-right ml-1"></i>
             </button>
         `;
     },
 
     renderStep3(body, footer) {
-        // Exclude flavor1 from the available list for flavor2
-        const availableFlavors = this.flavors.filter(f => !this.state.flavor1 || f.name !== this.state.flavor1.name);
+        const query = (this.state.searchTerm2 || '').toLowerCase().trim();
+        const availableFlavors = this.flavors
+            .filter(f => !this.state.flavor1 || f.name !== this.state.flavor1.name)
+            .filter(f => f.name.toLowerCase().includes(query) || (f.desc && f.desc.toLowerCase().includes(query)));
+
+        const canContinue = this.state.flavor2 && (!this.hasOlives(this.state.flavor2) || !!this.state.olive2);
+        const flavor1OliveText = this.state.olive1 ? ` (${this.state.olive1})` : '';
 
         body.innerHTML = `
             <div class="space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-2">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div>
                         <h3 class="text-lg sm:text-xl font-bold text-gray-900">3. Elige el segundo sabor</h3>
-                        <p class="text-xs sm:text-sm text-gray-500">Primer sabor: <span class="font-bold text-gray-800">${this.state.flavor1 ? this.state.flavor1.name : 'No seleccionado'}</span></p>
+                        <p class="text-xs sm:text-sm text-gray-500">Primer sabor: <span class="font-bold text-primary">${this.state.flavor1 ? this.state.flavor1.name + flavor1OliveText : 'No seleccionado'}</span></p>
                     </div>
                     <span class="text-xs bg-red-50 text-primary font-bold px-3 py-1 rounded-full self-start sm:self-auto">Mitad 2 de 2</span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                <!-- Search Input -->
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                    <input type="text"
+                        placeholder="Buscar sabor de pizza..."
+                        value="${this.state.searchTerm2 || ''}"
+                        oninput="armaTuPizzaApp.state.searchTerm2 = this.value; armaTuPizzaApp.render();"
+                        class="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1">
                     ${availableFlavors.map(flavor => {
                         const isSelected = this.state.flavor2 && this.state.flavor2.name === flavor.name;
+                        const hasOlive = this.hasOlives(flavor);
+                        const selectedOlive = isSelected ? this.state.olive2 : null;
+
                         return `
-                            <div onclick="armaTuPizzaApp.selectFlavor2('${flavor.name}')" class="bg-white border-2 ${isSelected ? 'border-primary ring-2 ring-primary/20 shadow-sm' : 'border-gray-200 hover:border-gray-300'} rounded-xl overflow-hidden cursor-pointer transition-all flex flex-col group">
-                                <div class="h-28 w-full bg-gray-100 overflow-hidden relative">
-                                    <img src="${flavor.image}" alt="${flavor.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-                                    ${isSelected ? '<span class="absolute top-2 right-2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">Elegido</span>' : ''}
+                            <div onclick="armaTuPizzaApp.selectFlavor2('${flavor.name}')"
+                                class="bg-white border-2 ${isSelected ? 'border-primary ring-2 ring-primary/20 shadow-md' : 'border-gray-200 hover:border-gray-300'} rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between group">
+
+                                <div class="flex gap-3 items-start">
+                                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 relative">
+                                        <img src="${flavor.image}" alt="${flavor.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80';">
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center justify-between gap-1">
+                                            <h4 class="font-bold text-gray-900 text-sm leading-tight truncate">${flavor.name}</h4>
+                                            ${isSelected ? '<span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">✓ Elegido</span>' : ''}
+                                        </div>
+                                        <p class="text-gray-500 text-[11px] line-clamp-2 mt-1 leading-snug">${flavor.desc || 'Receta artesanal de la casa.'}</p>
+                                    </div>
                                 </div>
-                                <div class="p-3 flex flex-col flex-grow">
-                                    <h4 class="font-bold text-gray-900 text-sm mb-1 line-clamp-1">${flavor.name}</h4>
-                                    <p class="text-gray-500 text-[11px] line-clamp-2 mb-3 leading-tight flex-grow">${flavor.desc || 'Receta artesanal de la casa.'}</p>
-                                    <button class="w-full py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors ${isSelected ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 group-hover:bg-primary group-hover:text-white'}">
-                                        ${isSelected ? '✓ Seleccionado' : 'Elegir'}
-                                    </button>
-                                </div>
+
+                                <!-- Olive Selector if pizza has olives -->
+                                ${hasOlive ? `
+                                    <div class="mt-3 pt-2.5 border-t border-gray-100" onclick="event.stopPropagation()">
+                                        <div class="flex items-center justify-between mb-1.5">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-600">Tipo de aceituna:</span>
+                                            <span class="text-[9px] font-bold uppercase tracking-wider ${isSelected && !selectedOlive ? 'text-red-500 font-extrabold' : 'text-gray-400'}">Obligatorio</span>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-1.5">
+                                            ${['Negras', 'Verdes', 'Mixtas'].map(oliveType => {
+                                                const isOliveActive = selectedOlive === oliveType;
+                                                return `
+                                                    <button type="button"
+                                                        onclick="armaTuPizzaApp.selectFlavor2('${flavor.name}'); armaTuPizzaApp.setOlive2('${oliveType}')"
+                                                        class="py-1 px-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold border transition-colors ${isOliveActive ? 'bg-primary text-white border-primary shadow-sm' : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'}">
+                                                        ${oliveType}
+                                                    </button>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                        ${isSelected && !selectedOlive ? `
+                                            <p class="text-red-500 text-[10px] font-bold mt-1 text-center">Selecciona un tipo de aceituna</p>
+                                        ` : ''}
+                                    </div>
+                                ` : ''}
                             </div>
                         `;
                     }).join('')}
@@ -366,7 +506,7 @@ const armaTuPizzaApp = {
             <button onclick="armaTuPizzaApp.goToStep(2)" class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition flex items-center gap-1.5">
                 <i class="fas fa-arrow-left"></i> Volver a Sabor 1
             </button>
-            <button ${this.state.flavor2 ? 'onclick="armaTuPizzaApp.goToStep(4)"' : 'disabled'} class="px-6 py-2.5 rounded-xl ${this.state.flavor2 ? 'bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'} font-bold text-xs uppercase tracking-wider transition">
+            <button ${canContinue ? 'onclick="armaTuPizzaApp.goToStep(4)"' : 'disabled'} class="px-6 py-2.5 rounded-xl ${canContinue ? 'bg-gradient-to-r from-primary to-red-700 text-white hover:shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'} font-bold text-xs uppercase tracking-wider transition">
                 Ver Resumen <i class="fas fa-arrow-right ml-1"></i>
             </button>
         `;
@@ -377,6 +517,9 @@ const armaTuPizzaApp = {
         const f2 = this.state.flavor2;
         const completePizzaImg = (f1 && f1.image) ? f1.image : this.state.defaultImg;
 
+        const f1OliveBadge = this.state.olive1 ? `<span class="inline-block mt-1 bg-amber-50 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-200">Aceituna: ${this.state.olive1}</span>` : '';
+        const f2OliveBadge = this.state.olive2 ? `<span class="inline-block mt-1 bg-amber-50 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-200">Aceituna: ${this.state.olive2}</span>` : '';
+
         body.innerHTML = `
             <div class="space-y-6">
                 <div class="text-center">
@@ -385,14 +528,14 @@ const armaTuPizzaApp = {
                     <p class="text-xs sm:text-sm text-gray-500">Revisa la combinación de sabores antes de agregar al carrito</p>
                 </div>
 
-                <!-- Complete Pizza Image (sin división visual según instrucciones del usuario) -->
+                <!-- Complete Pizza Image -->
                 <div class="flex justify-center">
                     <div class="w-56 h-56 sm:w-64 sm:h-64 rounded-full overflow-hidden border-4 border-white shadow-xl relative bg-gray-100 flex items-center justify-center">
                         <img src="${completePizzaImg}" alt="Pizza Completa" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80';">
                     </div>
                 </div>
 
-                <!-- Dos sabores elegidos (con fotos pequeñas separadas por un +) -->
+                <!-- Dos sabores elegidos -->
                 <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm">
                     <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-3 text-center sm:text-left">Combinación de 2 Sabores</p>
 
@@ -406,6 +549,7 @@ const armaTuPizzaApp = {
                                 <span class="text-[10px] uppercase font-bold text-primary block">Mitad 1</span>
                                 <h4 class="font-bold text-gray-900 text-sm leading-tight truncate">${f1 ? f1.name : ''}</h4>
                                 <p class="text-[11px] text-gray-500 truncate leading-tight">${f1 ? f1.desc : ''}</p>
+                                ${f1OliveBadge}
                             </div>
                         </div>
 
@@ -423,6 +567,7 @@ const armaTuPizzaApp = {
                                 <span class="text-[10px] uppercase font-bold text-primary block">Mitad 2</span>
                                 <h4 class="font-bold text-gray-900 text-sm leading-tight truncate">${f2 ? f2.name : ''}</h4>
                                 <p class="text-[11px] text-gray-500 truncate leading-tight">${f2 ? f2.desc : ''}</p>
+                                ${f2OliveBadge}
                             </div>
                         </div>
                     </div>
@@ -459,8 +604,11 @@ const armaTuPizzaApp = {
             return;
         }
 
+        const f1Text = this.state.flavor1.name + (this.state.olive1 ? ` (${this.state.olive1})` : '');
+        const f2Text = this.state.flavor2.name + (this.state.olive2 ? ` (${this.state.olive2})` : '');
+
         const name = `Arma Tu Pizza (${this.state.size})`;
-        const desc = `Mitad ${this.state.flavor1.name} + Mitad ${this.state.flavor2.name}`;
+        const desc = `Mitad ${f1Text} + Mitad ${f2Text}`;
         const price = this.state.price;
         const img = this.state.flavor1.image || this.state.defaultImg;
 
